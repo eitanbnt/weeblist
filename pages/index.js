@@ -15,6 +15,7 @@ export default function Home() {
         console.error('Supabase fetch error:', error);
         setItems([]);
       } else {
+        // console.log('Fetched items:', data);
         setItems(data || []);
       }
     } catch (e) {
@@ -24,6 +25,7 @@ export default function Home() {
     }
   }
 
+  // Fonction pour ajouter un nouvel item
   async function addItem() {
     if (!title) return;
     await supabase.from('collection').insert([{ title, type, progress: 0 }]);
@@ -31,11 +33,13 @@ export default function Home() {
     fetchItems();
   }
 
+  // Fonction pour incrémenter la progression
   async function increment(id, current) {
     await supabase.from('collection').update({ progress: current + 1 }).eq('id', id);
     fetchItems();
   }
 
+  // Récupération des items au chargement de la page
   useEffect(() => {
     fetchItems();
   }, []);
@@ -72,6 +76,7 @@ export default function Home() {
             {items.map(item => (
               <li key={item.id} className="flex items-center justify-between border rounded p-3">
                 <div>
+                  {console.log('Rendering item:', item.title, item.type, item.progress)}
                   <div className="font-medium">{item.title}</div>
                   <div className="text-sm text-gray-500">{item.type} • Progression: {item.progress}</div>
                 </div>
