@@ -48,6 +48,7 @@ export default function Home() {
           <h1 className="text-2xl font-semibold">WeebList</h1>
         </header>
 
+{/*Ajout d'anime / manga */}
         <section className="mb-4">
           <div className="flex gap-2 flex-wrap">
             <input
@@ -65,6 +66,7 @@ export default function Home() {
         </section>
 
         <section>
+          {/*Affichage qui ne fontionne pas pour le moment */}
           {loading ? <div>Chargement...</div> : null}
           <ul className="space-y-2">
             {items.map(item => (
