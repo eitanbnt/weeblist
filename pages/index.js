@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 export default function Home() {
-  const [items, setItems] = useState([]);
-  const [title, setTitle] = useState('');
-  const [type, setType] = useState('anime');
-  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState([]);// État pour stocker les items récupérés
+  const [title, setTitle] = useState('');// État pour stocker le titre de l'item à ajouter
+  const [type, setType] = useState('anime');// État pour stocker le type de l'item (anime ou manga)
+  const [loading, setLoading] = useState(false);// État pour gérer le chargement des données
+
+  // Fonction pour récupérer les items depuis Supabase
 
   async function fetchItems() {
     setLoading(true);
@@ -19,6 +21,7 @@ export default function Home() {
         setItems([]);
       } else {
         // Mise à jour de l'état avec les items récupérés
+        console.log('Fetched items:', data);
         setItems(data || []);
       }
     } catch (e) {
