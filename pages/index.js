@@ -10,12 +10,15 @@ export default function Home() {
   async function fetchItems() {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('collection').select('*').order('id', { ascending: false });
+      // Récupération des items depuis Supabase
+      // Enlever l'order by pour récupérer les items dans l'ordre d'insertion
+      // const { data, error } = await supabase.from('collection').select('*').order('id', { ascending: false });
+      const { data, error } = await supabase.from('collection').select('*');
       if (error) {
         console.error('Supabase fetch error:', error);
         setItems([]);
       } else {
-        // console.log('Fetched items:', data);
+        // Mise à jour de l'état avec les items récupérés
         setItems(data || []);
       }
     } catch (e) {
@@ -74,6 +77,7 @@ export default function Home() {
           {loading ? <div>Chargement...</div> : null}
           <ul className="space-y-2">
             {items.map(item => (
+              // Affichage de chaque item
               <li key={item.id} className="flex items-center justify-between border rounded p-3">
                 <div>
                   {console.log('Rendering item:', item.title, item.type, item.progress)}
