@@ -104,7 +104,7 @@ export default function Home() {
         setTitle("");
         setType("anime");
         // ajout optimiste/refetch
-        setItems((prev) => [ ...(data || []), ...prev ]);
+        setItems((prev) => [...(data || []), ...prev]);
       }
     } catch (e) {
       console.error(e);
@@ -115,26 +115,74 @@ export default function Home() {
   // --- Increment progress ---
   //TO DO : Ajouter un bouton pour réinitialiser la progression à 0
   //TO DO : Ajouter un bouton pour décrémenter la progression de -1
-  //TO DO : Blocker l'incrément si la progression est déjà à 100
-  //TO DO : Ajouter un bouton pour incrémenter de +10
   //TO DO : Ajouter un bouton pour incrémenter de +100
   //TO DO : Quand le lien avec MyAnimeList ou AniList sera implémenté, ajouter un bouton pour synchroniser la progression
   //TO DO : Ajouter un bouton pour synchroniser la progression avec MyAnimeList ou AniList
   //TO DO : Ajouter un bouton pour synchroniser la progression avec une API externe
   //TO DO : Ajouter un bouton pour synchroniser la progression avec une base de données externe
-  async function increment(id, current) {
-    try {
-      const { error } = await supabase.from("collection").update({ progress: current + 1 }).eq("id", id);// Increment progress by 1
-      if (error) {
-        console.error("Update error:", error);
-        setErrorMsg("Erreur lors de la mise à jour : " + error.message);
-      } else {
-        // local update
-        setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 1 } : it));// Optimistically update the local state
+  async function increment1(id, current) {
+    if (!id) return;
+    if (current >= 100) {
+      setErrorMsg("Progression déjà à 100% !");
+      return;
+    } else {
+      try {
+        const { error } = await supabase.from("collection").update({ progress: current + 1 }).eq("id", id);// Increment progress by 1
+        if (error) {
+          console.error("Update error:", error);
+          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
+        } else {
+          // local update
+          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 1 } : it));// Optimistically update the local state
+        }
+      } catch (e) {
+        console.error(e);
+        setErrorMsg("Erreur mise à jour (exception).");
       }
-    } catch (e) {
-      console.error(e);
-      setErrorMsg("Erreur mise à jour (exception).");
+    }
+  }
+
+    async function increment10(id, current) {
+    if (!id) return;
+    if (current >= 100) {
+      setErrorMsg("Progression déjà à 100% !");
+      return;
+    } else {
+      try {
+        const { error } = await supabase.from("collection").update({ progress: current + 10 }).eq("id", id);// Increment progress by 1
+        if (error) {
+          console.error("Update error:", error);
+          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
+        } else {
+          // local update
+          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 10 } : it));// Optimistically update the local state
+        }
+      } catch (e) {
+        console.error(e);
+        setErrorMsg("Erreur mise à jour (exception).");
+      }
+    }
+  }
+
+      async function increment100(id, current) {
+    if (!id) return;
+    if (current >= 100) {
+      setErrorMsg("Progression déjà à 100% !");
+      return;
+    } else {
+      try {
+        const { error } = await supabase.from("collection").update({ progress: current + 100 }).eq("id", id);// Increment progress by 1
+        if (error) {
+          console.error("Update error:", error);
+          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
+        } else {
+          // local update
+          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 100 } : it));// Optimistically update the local state
+        }
+      } catch (e) {
+        console.error(e);
+        setErrorMsg("Erreur mise à jour (exception).");
+      }
     }
   }
 
@@ -217,9 +265,9 @@ export default function Home() {
       list = list.filter(it => (it.title || "").toLowerCase().includes(q));
     }
     if (filter !== "all") list = list.filter(it => it.type === filter);// Filter by type (anime/manga)
-    if (sort === "newest") list.sort((a,b) => (b.id || 0) - (a.id || 0));// Sort by newest first (by ID)
-    if (sort === "alpha") list.sort((a,b) => (a.title || "").localeCompare(b.title || ""));// Sort alphabetically by title
-    if (sort === "progress") list.sort((a,b) => (b.progress || 0) - (a.progress || 0));// Sort by progress (highest first)
+    if (sort === "newest") list.sort((a, b) => (b.id || 0) - (a.id || 0));// Sort by newest first (by ID)
+    if (sort === "alpha") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));// Sort alphabetically by title
+    if (sort === "progress") list.sort((a, b) => (b.progress || 0) - (a.progress || 0));// Sort by progress (highest first)
     return list;
   }
 
@@ -279,8 +327,8 @@ export default function Home() {
           {/* search / sort / filter */}
           <section className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div className="flex gap-2 items-center">
-              <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Rechercher..." className="border rounded p-2" />
-              <select value={filter} onChange={(e)=>setFilter(e.target.value)} className="border rounded p-2">
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher..." className="border rounded p-2" />
+              <select value={filter} onChange={(e) => setFilter(e.target.value)} className="border rounded p-2">
                 <option value="all">Tous</option>
                 <option value="anime">Anime</option>
                 <option value="manga">Manga</option>
@@ -288,7 +336,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-500">Trier :</label>
-              <select value={sort} onChange={(e)=>setSort(e.target.value)} className="border rounded p-2">
+              <select value={sort} onChange={(e) => setSort(e.target.value)} className="border rounded p-2">
                 <option value="newest">Les plus récents</option>
                 <option value="alpha">A → Z</option>
                 <option value="progress">Par progression</option>
@@ -311,7 +359,7 @@ export default function Home() {
                   <div className="flex-1 min-w-0">
                     {editingId === item.id ? (
                       <div className="flex gap-2 items-center">
-                        <input value={editingTitle} onChange={e=>setEditingTitle(e.target.value)} className="border rounded p-2 flex-1" />
+                        <input value={editingTitle} onChange={e => setEditingTitle(e.target.value)} className="border rounded p-2 flex-1" />
                         <button onClick={saveEdit} className="bg-blue-500 text-white px-3 py-1 rounded">Enregistrer</button>
                         <button onClick={cancelEdit} className="px-3 py-1">Annuler</button>
                       </div>
@@ -324,9 +372,11 @@ export default function Home() {
                   </div>
 
                   <div className="flex-shrink-0 flex gap-2 ml-4">
-                    <button onClick={()=>increment(item.id, item.progress ?? 0)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
-                    <button onClick={()=>startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
-                    <button onClick={()=>removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
+                    <button onClick={() => increment1(item.id, item.progress ?? 0)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
+                    <button onClick={() => increment10(item.id, item.progress ?? 0)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
+                    <button onClick={() => increment100(item.id, item.progress ?? 0)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
+                    <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
+                    <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
                   </div>
                 </li>
               ))}

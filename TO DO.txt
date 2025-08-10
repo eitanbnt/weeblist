@@ -4,8 +4,8 @@ initAuth()
 Increment()
  Ajouter un bouton pour réinitialiser la progression à 0
  Ajouter un bouton pour décrémenter la progression de -1
- Blocker l'incrément si la progression est déjà à 100
- Ajouter un bouton pour incrémenter de +10
+ OK Blocker l'incrément si la progression est déjà à 100 
+ OK Ajouter un bouton pour incrémenter de +10
  Ajouter un bouton pour incrémenter de +100
  Quand le lien avec MyAnimeList ou AniList sera implémenté, ajouter un bouton pour synchroniser la progression
  Ajouter un bouton pour synchroniser la progression avec MyAnimeList ou AniList
