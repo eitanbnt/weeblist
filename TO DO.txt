@@ -7,6 +7,10 @@ Increment()
  Blocker l'incrément si la progression est déjà à 100
  Ajouter un bouton pour incrémenter de +10
  Ajouter un bouton pour incrémenter de +100
+ Quand le lien avec MyAnimeList ou AniList sera implémenté, ajouter un bouton pour synchroniser la progression
+ Ajouter un bouton pour synchroniser la progression avec MyAnimeList ou AniList
+ Ajouter un bouton pour synchroniser la progression avec une API externe
+ Ajouter un bouton pour synchroniser la progression avec une base de données externe
 
 signInWithEmail()
  Ajouter un bouton pour se connecter avec Google
@@ -31,6 +35,16 @@ getDisplayedItems()
  Ajouter un bouton pour exporter la liste en JSON
  Ajouter un bouton pour importer une liste depuis un fichier JSON
  Mofier le filtre car défaut pour afficher "Anime" et "Manga"
+
+addItem()
+ Ajouter un bouton pour ajouter un item
+ Ajouter un bouton pour ajouter un item avec un lien vers MyAnimeList ou AniList
+ Ajouter un bouton pour ajouter un item avec une recherche automatique
+ Faire un blocage pour empêcher l'ajout d'un item avec un titre vide
+ Faire un blocage pour empêcher l'ajout d'un item avec un titre déjà existant
+ Faire un blocage pour empêcher l'ajout d'un item avec un type invalide
+ Faire un blocage pour empêcher l'ajout d'un item avec une progression négative
+ Faire un blocage pour empêcher l'ajout d'un item avec une progression supérieure à 100
 
 Bouton connexion 
  Ajouter un bouton pour se connecter avec Google

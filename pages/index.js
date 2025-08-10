@@ -84,6 +84,14 @@ export default function Home() {
   }, []);
 
   // --- Add item ---
+  //TO DO: Ajouter un bouton pour ajouter un item
+  //TO DO: Ajouter un bouton pour ajouter un item avec un lien vers MyAnimeList ou AniList
+  //TO DO: Ajouter un bouton pour ajouter un item avec une recherche automatique
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec un titre vide
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec un titre déjà existant
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec un type invalide
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec une progression négative
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec une progression supérieure à 100
   async function addItem() {
     if (!title.trim()) return;
     try {
@@ -110,6 +118,10 @@ export default function Home() {
   //TO DO : Blocker l'incrément si la progression est déjà à 100
   //TO DO : Ajouter un bouton pour incrémenter de +10
   //TO DO : Ajouter un bouton pour incrémenter de +100
+  //TO DO : Quand le lien avec MyAnimeList ou AniList sera implémenté, ajouter un bouton pour synchroniser la progression
+  //TO DO : Ajouter un bouton pour synchroniser la progression avec MyAnimeList ou AniList
+  //TO DO : Ajouter un bouton pour synchroniser la progression avec une API externe
+  //TO DO : Ajouter un bouton pour synchroniser la progression avec une base de données externe
   async function increment(id, current) {
     try {
       const { error } = await supabase.from("collection").update({ progress: current + 1 }).eq("id", id);// Increment progress by 1
