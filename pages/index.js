@@ -84,6 +84,14 @@ export default function Home() {
   }, []);
 
   // --- Add item ---
+  //TO DO: Ajouter un bouton pour ajouter un item
+  //TO DO: Ajouter un bouton pour ajouter un item avec un lien vers MyAnimeList ou AniList
+  //TO DO: Ajouter un bouton pour ajouter un item avec une recherche automatique
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec un titre vide
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec un titre déjà existant
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec un type invalide
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec une progression négative
+  //TO DO: Faire un blocage pour empêcher l'ajout d'un item avec une progression supérieure à 100
   async function addItem() {
     if (!title.trim()) return;
     try {
