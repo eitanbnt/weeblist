@@ -118,6 +118,10 @@ export default function Home() {
   //TO DO : Blocker l'incrément si la progression est déjà à 100
   //TO DO : Ajouter un bouton pour incrémenter de +10
   //TO DO : Ajouter un bouton pour incrémenter de +100
+  //TO DO : Quand le lien avec MyAnimeList ou AniList sera implémenté, ajouter un bouton pour synchroniser la progression
+  //TO DO : Ajouter un bouton pour synchroniser la progression avec MyAnimeList ou AniList
+  //TO DO : Ajouter un bouton pour synchroniser la progression avec une API externe
+  //TO DO : Ajouter un bouton pour synchroniser la progression avec une base de données externe
   async function increment(id, current) {
     try {
       const { error } = await supabase.from("collection").update({ progress: current + 1 }).eq("id", id);// Increment progress by 1
