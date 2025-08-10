@@ -295,11 +295,6 @@ export default function Home() {
         </main>
 
         <footer className="mt-4 text-xs text-gray-500">
-          <div>Vérifie tes variables d'environnement dans <code className="bg-gray-100 px-1 rounded">.env.local</code> :</div>
-          <div className="mt-1">NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_KEY</div>
-          <div className="mt-1">
-            Si tu as RLS activé sur la table <code className="bg-gray-100 px-1 rounded">collection</code>, crée une policy SELECT publique ou adapte les policies pour permettre la lecture.
-          </div>
         </footer>
       </div>
     </div>
