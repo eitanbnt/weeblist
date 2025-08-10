@@ -3,35 +3,39 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 export default function Home() {
-  const [items, setItems] = useState([]);
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("anime");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [email, setEmail] = useState("");
-  const [user, setUser] = useState(null);
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("newest"); // newest, alpha, progress
-  const [filter, setFilter] = useState("all"); // all, anime, manga
-  const [editingId, setEditingId] = useState(null);
-  const [editingTitle, setEditingTitle] = useState("");
+  // initilisation des états
+  const [items, setItems] = useState([]);// Initial empty state
+  const [title, setTitle] = useState("");// Input for new item title
+  const [type, setType] = useState("Anime");// Default type for new items
+  const [loading, setLoading] = useState(false);// Loading state for fetch operations
+  const [errorMsg, setErrorMsg] = useState("");// Error message state
+  const [email, setEmail] = useState("");// Email for auth
+  const [user, setUser] = useState(null);// Authenticated user state
+  const [query, setQuery] = useState("");// Search query state
+  const [sort, setSort] = useState("newest"); // Sorting options: newest, alpha, progress
+  const [filter, setFilter] = useState("all"); // Filter options: all, anime, manga
+  const [editingId, setEditingId] = useState(null);// ID of the item being edited
+  const [editingTitle, setEditingTitle] = useState("");// Title of the item being edited
 
-  // --- Auth handling (Supabase v2 style) ---
+  // --- Initialize auth state ---
+  //TO DO: Réparer l'authentification car elle ne fonctionne pas
   useEffect(() => {
     async function initAuth() {
       try {
         const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        setUser(session?.user ?? null);
+          data: { session },// Get current session
+        } = await supabase.auth.getSession();// Fetch session data
+        setUser(session?.user ?? null);// Set user state based on session
 
-        // subscribe to auth changes
+        // Listen for auth state changes
+        // This will update the user state when login/logout occurs
+        // Note: This listener is automatically cleaned up by Supabase
         const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
           setUser(session?.user ?? null);
         });
 
         return () => {
-          listener?.subscription?.unsubscribe?.();
+          listener?.subscription?.unsubscribe?.();// Clean up listener on component unmount
         };
       } catch (e) {
         console.error("Auth init error:", e);
@@ -40,7 +44,7 @@ export default function Home() {
     initAuth();
   }, []);
 
-  // --- Fetch with debug & RLS hint ---
+  // --- Fetch items from Supabase ---
   async function fetchItems() {
     setLoading(true);
     setErrorMsg("");
@@ -50,10 +54,8 @@ export default function Home() {
       // Debug logs for investigation
       console.log("Supabase select response:", resp);
       if (resp.error) {
-        // If RLS blocks, Supabase returns an error or data empty depending on policy
-        setErrorMsg(
-          `Erreur Supabase: ${resp.error.message}. Si tu as RLS activé sur la table 'collection', ajoute une policy publique de SELECT ou adapte la requête en fonction de l'authentification.`
-        );
+        console.error("Fetch error:", resp.error);
+        setErrorMsg("Erreur lors de la récupération des éléments : " + resp.error.message);
         setItems([]);
       } else {
         if (!resp.data || resp.data.length === 0) {
@@ -75,6 +77,7 @@ export default function Home() {
     }
   }
 
+  // Fetch items on initial load
   useEffect(() => {
     fetchItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,8 +87,8 @@ export default function Home() {
   async function addItem() {
     if (!title.trim()) return;
     try {
-      const payload = { title: title.trim(), type, progress: 0 };
-      const { data, error } = await supabase.from("collection").insert([payload]).select();
+      const payload = { title: title.trim(), type, progress: 0 };// Prepare payload for insertion
+      const { data, error } = await supabase.from("collection").insert([payload]).select();// Insert new item and return the inserted row
       if (error) {
         console.error("Insert error:", error);
         setErrorMsg("Erreur lors de l'ajout : " + error.message);
@@ -102,15 +105,20 @@ export default function Home() {
   }
 
   // --- Increment progress ---
+  //TO DO : Ajouter un bouton pour réinitialiser la progression à 0
+  //TO DO : Ajouter un bouton pour décrémenter la progression de -1
+  //TO DO : Blocker l'incrément si la progression est déjà à 100
+  //TO DO : Ajouter un bouton pour incrémenter de +10
+  //TO DO : Ajouter un bouton pour incrémenter de +100
   async function increment(id, current) {
     try {
-      const { error } = await supabase.from("collection").update({ progress: current + 1 }).eq("id", id);
+      const { error } = await supabase.from("collection").update({ progress: current + 1 }).eq("id", id);// Increment progress by 1
       if (error) {
         console.error("Update error:", error);
         setErrorMsg("Erreur lors de la mise à jour : " + error.message);
       } else {
         // local update
-        setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 1 } : it));
+        setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 1 } : it));// Optimistically update the local state
       }
     } catch (e) {
       console.error(e);
@@ -121,12 +129,12 @@ export default function Home() {
   // --- Delete ---
   async function removeItem(id) {
     if (!confirm("Supprimer cet élément ?")) return;
-    const { error } = await supabase.from("collection").delete().eq("id", id);
+    const { error } = await supabase.from("collection").delete().eq("id", id);// Delete item by ID
     if (error) {
       console.error("Delete error:", error);
       setErrorMsg("Erreur suppression : " + error.message);
     } else {
-      setItems((prev) => prev.filter(it => it.id !== id));
+      setItems((prev) => prev.filter(it => it.id !== id));// Optimistically remove item from local state
     }
   }
 
@@ -154,9 +162,11 @@ export default function Home() {
   }
 
   // --- Auth actions ---
+  //TO DO: Ajouter un bouton pour se connecter avec Google
+  //TO DO : a revoir l'authentification car elle ne fonctionne pas
   async function signInWithEmail() {
-    if (!email) return setErrorMsg("Renseigne ton email pour recevoir le lien.");
-    const { data, error } = await supabase.auth.signInWithOtp({ email });
+    if (!email) return setErrorMsg("Renseigne ton email pour recevoir le lien.");// Validate email input
+    const { data, error } = await supabase.auth.signInWithOtp({ email });// Sign in with email OTP
     if (error) {
       console.error("Sign in error:", error);
       setErrorMsg("Erreur d'authentification : " + error.message);
@@ -164,22 +174,40 @@ export default function Home() {
       setErrorMsg("Lien envoyé à l'email (vérifie ta boîte).");
     }
   }
+
+  // Sign out function
+  //TO DO: Ajouter un bouton pour se déconnecter
+  //TO DO: Ajouter un bouton pour supprimer le compte
+  //TO DO: Ajouter un bouton pour changer l'email
+  //TO DO: Ajouter un bouton pour changer le mot de passe
+  //TO DO: Ajouter un bouton pour changer le pseudo
+  //TO DO: Ajouter un bouton pour changer la photo de profil
+  //TO DO: Ajouter un bouton pour changer le thème
   async function signOut() {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut();// Sign out from Supabase
     setUser(null);
   }
 
   // --- Derived list: search, filter, sort ---
+  // TO DO: Ajouter un bouton pour réinitialiser la recherche, le filtre et le tri
+  // TO DO: Ajouter un bouton pour réinitialiser la liste
+  // TO DO: Ajouter un bouton pour exporter la liste en CSV
+  // TO DO: Ajouter un bouton pour importer une liste depuis un fichier CSV
+  // TO DO: Ajouter un bouton pour partager la liste avec d'autres utilisateurs
+  // TO DO: Ajouter un bouton pour synchroniser la liste avec une API externe (ex: MyAnimeList, AniList, etc.)
+  // TO DO: Ajouter un bouton pour exporter la liste en JSON
+  // TO DO: Ajouter un bouton pour importer une liste depuis un fichier JSON
+  // TO DO: Mofier le filtre car défaut pour afficher "Anime" et "Manga"
   function getDisplayedItems() {
     let list = [...items];
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter(it => (it.title || "").toLowerCase().includes(q));
     }
-    if (filter !== "all") list = list.filter(it => it.type === filter);
-    if (sort === "newest") list.sort((a,b) => (b.id || 0) - (a.id || 0));
-    if (sort === "alpha") list.sort((a,b) => (a.title || "").localeCompare(b.title || ""));
-    if (sort === "progress") list.sort((a,b) => (b.progress || 0) - (a.progress || 0));
+    if (filter !== "all") list = list.filter(it => it.type === filter);// Filter by type (anime/manga)
+    if (sort === "newest") list.sort((a,b) => (b.id || 0) - (a.id || 0));// Sort by newest first (by ID)
+    if (sort === "alpha") list.sort((a,b) => (a.title || "").localeCompare(b.title || ""));// Sort alphabetically by title
+    if (sort === "progress") list.sort((a,b) => (b.progress || 0) - (a.progress || 0));// Sort by progress (highest first)
     return list;
   }
 
@@ -203,6 +231,9 @@ export default function Home() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
+                {/* Email input for login */}
+                {/* TO DO: Ajouter un bouton pour se connecter avec Google */}
+                {/* TO DO: Refaire la connexion car pas bon du tout */}
                 <input
                   value={email}
                   onChange={e => setEmail(e.target.value)}

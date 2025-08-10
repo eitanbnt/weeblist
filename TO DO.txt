@@ -1,0 +1,37 @@
+initAuth()
+ Réparer l'authentification car elle ne fonctionne pas
+
+Increment()
+ Ajouter un bouton pour réinitialiser la progression à 0
+ Ajouter un bouton pour décrémenter la progression de -1
+ Blocker l'incrément si la progression est déjà à 100
+ Ajouter un bouton pour incrémenter de +10
+ Ajouter un bouton pour incrémenter de +100
+
+signInWithEmail()
+ Ajouter un bouton pour se connecter avec Google
+ A revoir l'authentification car elle ne fonctionne pas
+
+signOut()
+ Ajouter un bouton pour se déconnecter
+ Ajouter un bouton pour supprimer le compte
+ Ajouter un bouton pour changer l'email
+ Ajouter un bouton pour changer le mot de passe
+ Ajouter un bouton pour changer le pseudo
+ Ajouter un bouton pour changer la photo de profil
+ Ajouter un bouton pour changer le thème
+
+getDisplayedItems()
+ Ajouter un bouton pour réinitialiser la recherche, le filtre et le tri
+ Ajouter un bouton pour réinitialiser la liste
+ Ajouter un bouton pour exporter la liste en CSV
+ Ajouter un bouton pour importer une liste depuis un fichier CSV
+ Ajouter un bouton pour partager la liste avec d'autres utilisateurs
+ Ajouter un bouton pour synchroniser la liste avec une API externe (ex: MyAnimeList, AniList, etc.)
+ Ajouter un bouton pour exporter la liste en JSON
+ Ajouter un bouton pour importer une liste depuis un fichier JSON
+ Mofier le filtre car défaut pour afficher "Anime" et "Manga"
+
+Bouton connexion 
+ Ajouter un bouton pour se connecter avec Google
+ Refaire la connexion car pas bon du tout
