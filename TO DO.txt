@@ -2,11 +2,13 @@ initAuth()
  Réparer l'authentification car elle ne fonctionne pas
 
 Increment()
+ Tout mettre dans une fonction qui va utiliser un select
  Ajouter un bouton pour réinitialiser la progression à 0
  Ajouter un bouton pour décrémenter la progression de -1
  OK Blocker l'incrément si la progression est déjà à 100 
  OK Ajouter un bouton pour incrémenter de +10
- Ajouter un bouton pour incrémenter de +100
+ OK Ajouter un bouton pour incrémenter de +100
+ OK Arrondir l'ajout dès le progress + l'ajout est supérieur à 100
  Quand le lien avec MyAnimeList ou AniList sera implémenté, ajouter un bouton pour synchroniser la progression
  Ajouter un bouton pour synchroniser la progression avec MyAnimeList ou AniList
  Ajouter un bouton pour synchroniser la progression avec une API externe

@@ -113,13 +113,6 @@ export default function Home() {
   }
 
   // --- Increment progress ---
-  //TO DO : Ajouter un bouton pour réinitialiser la progression à 0
-  //TO DO : Ajouter un bouton pour décrémenter la progression de -1
-  //TO DO : Ajouter un bouton pour incrémenter de +100
-  //TO DO : Quand le lien avec MyAnimeList ou AniList sera implémenté, ajouter un bouton pour synchroniser la progression
-  //TO DO : Ajouter un bouton pour synchroniser la progression avec MyAnimeList ou AniList
-  //TO DO : Ajouter un bouton pour synchroniser la progression avec une API externe
-  //TO DO : Ajouter un bouton pour synchroniser la progression avec une base de données externe
   async function increment1(id, current) {
     if (!id) return;
     if (current >= 100) {
@@ -142,11 +135,26 @@ export default function Home() {
     }
   }
 
-    async function increment10(id, current) {
+  async function increment10(id, current) {
     if (!id) return;
     if (current >= 100) {
       setErrorMsg("Progression déjà à 100% !");
       return;
+    } else if (current + 10 > 100) {
+      const ajout = 100 - current;// Calculate how much to add to reach 100
+      try {
+        const { error } = await supabase.from("collection").update({ progress: current + ajout }).eq("id", id);// Increment progress by 1
+        if (error) {
+          console.error("Update error:", error);
+          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
+        } else {
+          // local update
+          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + ajout } : it));// Optimistically update the local state
+        }
+      } catch (e) {
+        console.error(e);
+        setErrorMsg("Erreur mise à jour (exception).");
+      }
     } else {
       try {
         const { error } = await supabase.from("collection").update({ progress: current + 10 }).eq("id", id);// Increment progress by 1
@@ -164,11 +172,26 @@ export default function Home() {
     }
   }
 
-      async function increment100(id, current) {
+  async function increment100(id, current) {
     if (!id) return;
     if (current >= 100) {
       setErrorMsg("Progression déjà à 100% !");
       return;
+    } else if (current + 10 > 100) {
+      const ajout = 100 - current;// Calculate how much to add to reach 100
+      try {
+        const { error } = await supabase.from("collection").update({ progress: current + ajout }).eq("id", id);// Increment progress by 1
+        if (error) {
+          console.error("Update error:", error);
+          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
+        } else {
+          // local update
+          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + ajout } : it));// Optimistically update the local state
+        }
+      } catch (e) {
+        console.error(e);
+        setErrorMsg("Erreur mise à jour (exception).");
+      }
     } else {
       try {
         const { error } = await supabase.from("collection").update({ progress: current + 100 }).eq("id", id);// Increment progress by 1
