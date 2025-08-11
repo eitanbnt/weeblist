@@ -113,6 +113,28 @@ export default function Home() {
   }
 
   // --- Increment progress ---
+  async function incrementProgress(id, current, increment) {
+    if (!id) return;  // Validate ID
+    if (current >= 100) {
+      setErrorMsg("Progression déjà à 100% !");
+      return;  // Prevent increment if already at max
+    }
+    const newProgress = Math.min(current + increment, 100);  // Ensure we don't exceed 100
+    try {
+      const { error } = await supabase.from("collection").update({ progress: newProgress }).eq("id", id);// Update progress in the database
+      if (error) {
+        console.error("Update error:", error);
+        setErrorMsg("Erreur lors de la mise à jour : " + error.message);
+      }
+      else {
+        // Optimistically update local state
+        setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: newProgress } : it));
+      }
+    } catch (e) {
+      console.error(e);
+      setErrorMsg("Erreur mise à jour (exception).");
+    }
+  }
   async function increment1(id, current) {
     if (!id) return;
     if (current >= 100) {
