@@ -135,101 +135,6 @@ export default function Home() {
       setErrorMsg("Erreur mise à jour (exception).");
     }
   }
-  async function increment1(id, current) {
-    if (!id) return;
-    if (current >= 100) {
-      setErrorMsg("Progression déjà à 100% !");
-      return;
-    } else {
-      try {
-        const { error } = await supabase.from("collection").update({ progress: current + 1 }).eq("id", id);// Increment progress by 1
-        if (error) {
-          console.error("Update error:", error);
-          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
-        } else {
-          // local update
-          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 1 } : it));// Optimistically update the local state
-        }
-      } catch (e) {
-        console.error(e);
-        setErrorMsg("Erreur mise à jour (exception).");
-      }
-    }
-  }
-
-  async function increment10(id, current) {
-    if (!id) return;
-    if (current >= 100) {
-      setErrorMsg("Progression déjà à 100% !");
-      return;
-    } else if (current + 10 > 100) {
-      const ajout = 100 - current;// Calculate how much to add to reach 100
-      try {
-        const { error } = await supabase.from("collection").update({ progress: current + ajout }).eq("id", id);// Increment progress by 1
-        if (error) {
-          console.error("Update error:", error);
-          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
-        } else {
-          // local update
-          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + ajout } : it));// Optimistically update the local state
-        }
-      } catch (e) {
-        console.error(e);
-        setErrorMsg("Erreur mise à jour (exception).");
-      }
-    } else {
-      try {
-        const { error } = await supabase.from("collection").update({ progress: current + 10 }).eq("id", id);// Increment progress by 1
-        if (error) {
-          console.error("Update error:", error);
-          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
-        } else {
-          // local update
-          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 10 } : it));// Optimistically update the local state
-        }
-      } catch (e) {
-        console.error(e);
-        setErrorMsg("Erreur mise à jour (exception).");
-      }
-    }
-  }
-
-  async function increment100(id, current) {
-    if (!id) return;
-    if (current >= 100) {
-      setErrorMsg("Progression déjà à 100% !");
-      return;
-    } else if (current + 10 > 100) {
-      const ajout = 100 - current;// Calculate how much to add to reach 100
-      try {
-        const { error } = await supabase.from("collection").update({ progress: current + ajout }).eq("id", id);// Increment progress by 1
-        if (error) {
-          console.error("Update error:", error);
-          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
-        } else {
-          // local update
-          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + ajout } : it));// Optimistically update the local state
-        }
-      } catch (e) {
-        console.error(e);
-        setErrorMsg("Erreur mise à jour (exception).");
-      }
-    } else {
-      try {
-        const { error } = await supabase.from("collection").update({ progress: current + 100 }).eq("id", id);// Increment progress by 1
-        if (error) {
-          console.error("Update error:", error);
-          setErrorMsg("Erreur lors de la mise à jour : " + error.message);
-        } else {
-          // local update
-          setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: it.progress + 100 } : it));// Optimistically update the local state
-        }
-      } catch (e) {
-        console.error(e);
-        setErrorMsg("Erreur mise à jour (exception).");
-      }
-    }
-  }
 
   // --- Delete ---
   async function removeItem(id) {
@@ -417,9 +322,9 @@ export default function Home() {
                   </div>
 
                   <div className="flex-shrink-0 flex gap-2 ml-4">
-                    <button onClick={() => increment1(item.id, item.progress ?? 0)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
-                    <button onClick={() => increment10(item.id, item.progress ?? 0)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
-                    <button onClick={() => increment100(item.id, item.progress ?? 0)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,10)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,100)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
                     <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
                     <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
                   </div>
