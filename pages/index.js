@@ -119,7 +119,7 @@ export default function Home() {
       setErrorMsg("Progression déjà à 100% !");
       return;  // Prevent increment if already at max
     }
-    const newProgress = Math.min(current + increment, 100);  // Ensure we don't exceed 100
+    const newProgress = Math.min(current + increment, 100);  // Ensure progress does not exceed 100
     try {
       const { error } = await supabase.from("collection").update({ progress: newProgress }).eq("id", id);// Update progress in the database
       if (error) {

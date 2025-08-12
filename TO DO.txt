@@ -2,7 +2,7 @@ initAuth()
  Réparer l'authentification car elle ne fonctionne pas
 
 Increment()
- Tout mettre dans une fonction qui va utiliser un select
+ Ok pas dans un select Tout mettre dans une fonction qui va utiliser un select
  Ajouter un bouton pour réinitialiser la progression à 0
  Ajouter un bouton pour décrémenter la progression de -1
  OK Blocker l'incrément si la progression est déjà à 100 
