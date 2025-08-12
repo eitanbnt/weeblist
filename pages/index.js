@@ -136,7 +136,7 @@ export default function Home() {
     }
   }
 
-    // --- Decrement progress ---
+  // --- Decrement progress ---
   async function decrementProgress(id, current, decrement) {
     if (!id) return;  // Validate ID
     if (current <= 0) {
@@ -372,6 +372,9 @@ export default function Home() {
                       <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 1)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
                       <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 10)} className="bg-red-500 text-white px-3 py-1 rounded">-10</button>
                       <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 100)} className="bg-red-500 text-white px-3 py-1 rounded">-100</button>
+                    </div>
+
+                    <div className="flex-shrink-0 flex gap-2 ml-4">
                       <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
                       <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 10)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
                       <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 100)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
