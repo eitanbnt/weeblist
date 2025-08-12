@@ -164,6 +164,24 @@ export default function Home() {
     }
   }
 
+  // --- Reset progress ---
+  async function resetProgress(id) {
+    if (!id) return;  // Validate ID
+    try {
+      const { error } = await supabase.from("collection").update({ progress: 0 }).eq("id", id);// Reset progress to 0
+      if (error) {
+        console.error("Reset error:", error);
+        setErrorMsg("Erreur lors de la réinitialisation : " + error.message); // Set error message on failure
+      } else {
+        // Optimistically update local state
+        setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: 0 } : it));
+      }
+    } catch (e) {
+      console.error("Reset exception:", e);
+      setErrorMsg("Erreur réinitialisation (exception)."); // Set error message on exception
+    }
+  }
+
   // --- Delete ---
   async function removeItem(id) {
     if (!confirm("Supprimer cet élément ?")) return;
@@ -360,6 +378,7 @@ export default function Home() {
                     </div>
 
                     <div className="flex-shrink-0 flex flex gap-2 ml-4">
+                      <button onClick={() => resetProgress(item.id)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset Progression</button>
                       <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
                       <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
                     </div>
