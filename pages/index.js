@@ -119,7 +119,7 @@ export default function Home() {
       setErrorMsg("Progression déjà à 100% !");
       return;  // Prevent increment if already at max
     }
-    const newProgress = Math.min(current + increment, 100);  // Ensure we don't exceed 100
+    const newProgress = Math.min(current + increment, 100);  // Ensure progress does not exceed 100
     try {
       const { error } = await supabase.from("collection").update({ progress: newProgress }).eq("id", id);// Update progress in the database
       if (error) {
@@ -133,6 +133,52 @@ export default function Home() {
     } catch (e) {
       console.error(e);
       setErrorMsg("Erreur mise à jour (exception).");
+    }
+  }
+
+    // --- Decrement progress ---
+  async function decrementProgress(id, current, decrement) {
+    if (!id) return;  // Validate ID
+    if (current <= 0) {
+      setErrorMsg("Progression déjà à 0% !");
+      return;  // Prevent decrement if already at min
+    }
+    if (current - decrement < 0) {
+      setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: 0 } : it)); // Reset to 0 if decrement goes below 0
+      return;  // Prevent decrement below 0
+    }
+    const newProgress = Math.min(current - decrement, 100);  // Ensure progress does not exceed 100
+    try {
+      const { error } = await supabase.from("collection").update({ progress: newProgress }).eq("id", id);// Update progress in the database
+      if (error) {
+        console.error("Update error:", error);
+        setErrorMsg("Erreur lors de la mise à jour : " + error.message);
+      }
+      else {
+        // Optimistically update local state
+        setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: newProgress } : it));
+      }
+    } catch (e) {
+      console.error(e);
+      setErrorMsg("Erreur mise à jour (exception).");
+    }
+  }
+
+  // --- Reset progress ---
+  async function resetProgress(id) {
+    if (!id) return;  // Validate ID
+    try {
+      const { error } = await supabase.from("collection").update({ progress: 0 }).eq("id", id);// Reset progress to 0
+      if (error) {
+        console.error("Reset error:", error);
+        setErrorMsg("Erreur lors de la réinitialisation : " + error.message); // Set error message on failure
+      } else {
+        // Optimistically update local state
+        setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: 0 } : it));
+      }
+    } catch (e) {
+      console.error("Reset exception:", e);
+      setErrorMsg("Erreur réinitialisation (exception)."); // Set error message on exception
     }
   }
 
@@ -321,13 +367,36 @@ export default function Home() {
                     )}
                   </div>
 
-                  <div className="flex-shrink-0 flex gap-2 ml-4">
-                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
-                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,10)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
-                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,100)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
+                  <div className="flex-shrink-0 flex-col gap-2 mt-4">
+                    <div className="flex-shrink-0 flex gap-2 ml-4">
+                      <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 1)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
+                      <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 10)} className="bg-red-500 text-white px-3 py-1 rounded">-10</button>
+                      <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 100)} className="bg-red-500 text-white px-3 py-1 rounded">-100</button>
+                      <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
+                      <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 10)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
+                      <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 100)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
+                    </div>
+
+                    <div className="flex-shrink-0 flex flex gap-2 ml-4">
+                      <button onClick={() => resetProgress(item.id)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset Progression</button>
+                      <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
+                      <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
+                    </div>
+                  </div>
+
+                  {/* <div className="flex-shrink-0 flex gap-2 ml-4">
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 1)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 10)} className="bg-red-500 text-white px-3 py-1 rounded">-10</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 100)} className="bg-red-500 text-white px-3 py-1 rounded">-100</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 10)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 100)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
+                  </div>
+
+                  <div className="flex-shrink-0 flex flex-col gap-2 ml-4">
                     <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
                     <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
-                  </div>
+                  </div> */}
                 </li>
               ))}
             </ul>
