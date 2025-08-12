@@ -4,7 +4,9 @@ initAuth()
 Increment()
  Ok pas dans un select Tout mettre dans une fonction qui va utiliser un select
  Ajouter un bouton pour réinitialiser la progression à 0
- Ajouter un bouton pour décrémenter la progression de -1
+ OK Ajouter un bouton pour décrémenter la progression de -1
+ OK Ajouter un bouton pour décrémenter la progression de -10
+ OK Ajouter un bouton pour décrémenter la progression de -100
  OK Blocker l'incrément si la progression est déjà à 100 
  OK Ajouter un bouton pour incrémenter de +10
  OK Ajouter un bouton pour incrémenter de +100

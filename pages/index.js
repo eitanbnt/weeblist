@@ -136,6 +136,34 @@ export default function Home() {
     }
   }
 
+    // --- Decrement progress ---
+  async function decrementProgress(id, current, decrement) {
+    if (!id) return;  // Validate ID
+    if (current <= 0) {
+      setErrorMsg("Progression déjà à 0% !");
+      return;  // Prevent decrement if already at min
+    }
+    if (current - decrement < 0) {
+      setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: 0 } : it)); // Reset to 0 if decrement goes below 0
+      return;  // Prevent decrement below 0
+    }
+    const newProgress = Math.min(current - decrement, 100);  // Ensure progress does not exceed 100
+    try {
+      const { error } = await supabase.from("collection").update({ progress: newProgress }).eq("id", id);// Update progress in the database
+      if (error) {
+        console.error("Update error:", error);
+        setErrorMsg("Erreur lors de la mise à jour : " + error.message);
+      }
+      else {
+        // Optimistically update local state
+        setItems((prev) => prev.map(it => it.id === id ? { ...it, progress: newProgress } : it));
+      }
+    } catch (e) {
+      console.error(e);
+      setErrorMsg("Erreur mise à jour (exception).");
+    }
+  }
+
   // --- Delete ---
   async function removeItem(id) {
     if (!confirm("Supprimer cet élément ?")) return;
@@ -321,13 +349,35 @@ export default function Home() {
                     )}
                   </div>
 
-                  <div className="flex-shrink-0 flex gap-2 ml-4">
-                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
-                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,10)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
-                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0,100)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
+                  <div className="flex-shrink-0 flex-col gap-2 mt-4">
+                    <div className="flex-shrink-0 flex gap-2 ml-4">
+                      <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 1)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
+                      <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 10)} className="bg-red-500 text-white px-3 py-1 rounded">-10</button>
+                      <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 100)} className="bg-red-500 text-white px-3 py-1 rounded">-100</button>
+                      <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
+                      <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 10)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
+                      <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 100)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
+                    </div>
+
+                    <div className="flex-shrink-0 flex flex gap-2 ml-4">
+                      <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
+                      <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
+                    </div>
+                  </div>
+
+                  {/* <div className="flex-shrink-0 flex gap-2 ml-4">
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 1)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 10)} className="bg-red-500 text-white px-3 py-1 rounded">-10</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 100)} className="bg-red-500 text-white px-3 py-1 rounded">-100</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 10)} className="bg-green-500 text-white px-3 py-1 rounded">+10</button>
+                    <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 100)} className="bg-green-500 text-white px-3 py-1 rounded">+100</button>
+                  </div>
+
+                  <div className="flex-shrink-0 flex flex-col gap-2 ml-4">
                     <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
                     <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
-                  </div>
+                  </div> */}
                 </li>
               ))}
             </ul>
