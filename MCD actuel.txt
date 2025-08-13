@@ -1,0 +1,24 @@
+1. Contexte du projet
+c'est un site en JS.
+Dans un premier temps, avoir une cheklist d'anime / manga avec une progression sur 100.
+Dans un second temps, récupérer par API les animes / mangas avec le nombres d'épisodes / chapitres / tomes avec une progression par rapport à ce nombre
+
+2. Liste des entités
+Entité 1 : Collection : collection d'anime / manga 
+
+3. Attributs par entité
+Collection
+
+id (PK)
+
+title
+
+type
+
+progress
+
+4. Relations et cardinalités
+Pas d'autres entités
+
+5. Règles métier
+Je ne sais pas 
