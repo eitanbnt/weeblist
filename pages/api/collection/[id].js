@@ -1,4 +1,4 @@
-import collectionController from "../collection/CollectionController"; // Adjusted import path to match the new structure
+import collectionController from "../../../controllers/CollectionController"; // Adjusted import path to match the new structure
 
 export default function handler(req, res) {
   if (req.method === "GET") return collectionController.get(req, res);
