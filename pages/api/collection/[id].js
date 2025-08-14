@@ -1,4 +1,4 @@
-import collectionController from "../../../controllers/collectionController";
+import collectionController from "../../../../controllers/collectionController.js";
 
 export default function handler(req, res) {
   if (req.method === "GET") return collectionController.get(req, res);
