@@ -1,0 +1,44 @@
+Collection (ta liste personnelle)
+
+id (PK)
+
+title
+
+type (anime / manga)
+
+progress (en % ou calculé)
+
+Work (l’œuvre elle-même, info venant de l’API)
+
+id_work (PK)
+
+title
+
+type
+
+total_episodes
+
+total_chapters
+
+total_volumes
+
+Relation entre Collection et Work
+
+id (PK)
+
+id_collection (FK)
+
+id_work (FK)
+
+progress_absolute (ex. nombre d’épisodes/chapitres lus/vus)
+
+Collection (id, title, type, progress)
+Work (id_work, title, type, total_episodes, total_chapters, total_volumes)
+Collection_Work (id, id_collection, id_work, progress_absolute)
+
+
+Règle métier possible (même si tu dis "je ne sais pas") :
+
+progress dans Collection = (progress_absolute / total_episodes) * 100 (ou chapitres/tomes selon le type).
+
+Une Collection ne peut pas avoir un progress_absolute supérieur au total_x défini dans Work.
