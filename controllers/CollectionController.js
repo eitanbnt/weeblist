@@ -1,46 +1,42 @@
-import CollectionRepository from "../repositories/CollectionRepository.js";
+import collectionRepository from "../repositories/CollectionRepository.js";
 
 export default {
     async list(req, res) {
         try {
-            const collections = await CollectionRepository.getAll();
-            res.json(collections);
+            const data = await collectionRepository.getAll();
+            res.status(200).json(data);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     },
-
     async get(req, res) {
         try {
-            const collection = await CollectionRepository.getById(req.params.id);
-            res.json(collection);
+            const data = await collectionRepository.getById(req.query.id);
+            res.status(200).json(data);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     },
-
     async create(req, res) {
         try {
-            const newCollection = await CollectionRepository.create(req.body);
-            res.status(201).json(newCollection);
+            const created = await collectionRepository.create(req.body);
+            res.status(201).json(created);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     },
-
     async update(req, res) {
         try {
-            await CollectionRepository.update(req.params.id, req.body);
-            res.sendStatus(204);
+            const updated = await collectionRepository.update(req.query.id, req.body);
+            res.status(200).json(updated);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     },
-
-    async delete(req, res) {
+    async remove(req, res) {
         try {
-            await CollectionRepository.delete(req.params.id);
-            res.sendStatus(204);
+            await collectionRepository.delete(req.query.id);
+            res.status(204).end();
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
