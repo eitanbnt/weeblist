@@ -145,7 +145,15 @@ export default function Home() {
         <div className="min-h-screen p-4 bg-gray-50 flex justify-center">
             <div className="w-full max-w-3xl">
                 <header className="flex items-center justify-between mb-4">
-                    <h1 className="text-2xl font-semibold">WeebList</h1>
+                    <div className="w-full max-w-3xl">
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-pink-100 rounded flex items-center justify-center font-bold text-pink-600">WL</div>
+                            <div>
+                                <h1 className="text-2xl font-semibold">WeebList</h1>
+                                <div className="text-sm text-gray-500">Tracker anime & manga</div>
+                            </div>
+                        </div>
+                    </div>
                 </header>
 
                 <main className="bg-white rounded-2xl shadow p-5">
