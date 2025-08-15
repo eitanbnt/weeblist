@@ -1,55 +1,37 @@
-initAuth()
- Réparer l'authentification car elle ne fonctionne pas
+Si fini mettre une coche ✅
 
-Increment()
- Ok pas dans un select Tout mettre dans une fonction qui va utiliser un select
- OK Ajouter un bouton pour réinitialiser la progression à 0
- OK Ajouter un bouton pour décrémenter la progression de -1
- OK Ajouter un bouton pour décrémenter la progression de -10
- OK Ajouter un bouton pour décrémenter la progression de -100
- OK Blocker l'incrément si la progression est déjà à 100 
- OK Ajouter un bouton pour incrémenter de +10
- OK Ajouter un bouton pour incrémenter de +100
- OK Arrondir l'ajout dès le progress + l'ajout est supérieur à 100
- Quand le lien avec MyAnimeList ou AniList sera implémenté, ajouter un bouton pour synchroniser la progression
- Ajouter un bouton pour synchroniser la progression avec MyAnimeList ou AniList
- Ajouter un bouton pour synchroniser la progression avec une API externe
- Ajouter un bouton pour synchroniser la progression avec une base de données externe
+-----------Increment---------------------
 
-signInWithEmail()
- Ajouter un bouton pour se connecter avec Google
- A revoir l'authentification car elle ne fonctionne pas
+- Avoir qu'une seule fonction pour incrémenter et décrémenter (en paramètre avoir un booléan qui décide de quoi faire)
+- Refaire en sorte d'avoir + ou - 10, 100, le nombre d'épisode, et à la fin un pourcentage 
+- 
 
-signOut()
- Ajouter un bouton pour se déconnecter
- Ajouter un bouton pour supprimer le compte
- Ajouter un bouton pour changer l'email
- Ajouter un bouton pour changer le mot de passe
- Ajouter un bouton pour changer le pseudo
- Ajouter un bouton pour changer la photo de profil
- Ajouter un bouton pour changer le thème
+--------Views--------------
 
-getDisplayedItems()
- Ajouter un bouton pour réinitialiser la recherche, le filtre et le tri
- Ajouter un bouton pour réinitialiser la liste
- Ajouter un bouton pour exporter la liste en CSV
- Ajouter un bouton pour importer une liste depuis un fichier CSV
- Ajouter un bouton pour partager la liste avec d'autres utilisateurs
- Ajouter un bouton pour synchroniser la liste avec une API externe (ex: MyAnimeList, AniList, etc.)
- Ajouter un bouton pour exporter la liste en JSON
- Ajouter un bouton pour importer une liste depuis un fichier JSON
- Mofier le filtre car défaut pour afficher "Anime" et "Manga"
+- Faire des views pour collection
+- Refaire l'index.js 
+-
 
-addItem()
- Ajouter un bouton pour ajouter un item
- Ajouter un bouton pour ajouter un item avec un lien vers MyAnimeList ou AniList
- Ajouter un bouton pour ajouter un item avec une recherche automatique
- Faire un blocage pour empêcher l'ajout d'un item avec un titre vide
- Faire un blocage pour empêcher l'ajout d'un item avec un titre déjà existant
- Faire un blocage pour empêcher l'ajout d'un item avec un type invalide
- Faire un blocage pour empêcher l'ajout d'un item avec une progression négative
- Faire un blocage pour empêcher l'ajout d'un item avec une progression supérieure à 100
+-------Connexion-----------
 
-Bouton connexion 
- Ajouter un bouton pour se connecter avec Google
- Refaire la connexion car pas bon du tout
+- Refaire le système de connexion
+- En attendant désactiver la connexion ✅
+-
+
+----------API----------------
+
+- Faire la connexion avec l'API
+- Rentrer un certain nombre d'anime / Manga
+-
+
+--------Collection----------------
+
+- Faire en sorte de ne pas rajouter le même titre du même type
+- Rajouter des types 
+-
+
+---------Design------------------
+
+- Faire un Design sympa
+- Ajouter le logo
+- 

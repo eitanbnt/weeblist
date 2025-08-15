@@ -1,3 +1,5 @@
+// This file is part of the Weeblist project.
+// It handles API requests for the collection list and creation.
 import collectionController from "../../../controllers/CollectionController";// Adjusted import path to match the new structure
 
 export default function handler(req, res) {
