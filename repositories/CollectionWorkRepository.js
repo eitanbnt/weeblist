@@ -1,5 +1,9 @@
-import { supabase } from "../../lib/supabase";
+// This file is part of the Weeblist project.
+// It defines the CollectionWorkRepository for interacting with the collection_work data in the database.
+import { supabase } from "../lib/supabase";
 
+// CollectionWorkRepository.js
+// This repository handles all database operations related to collection_work.
 export default {
     async getAll() {
         const { data, error } = await supabase.from("collection_work").select("*");
