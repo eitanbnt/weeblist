@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useRef } from "react";
+// import { RefreshCWIcon } from "../views/boutonAnime/refresh.jsx";
 
 export default function Home() {
     const [items, setItems] = useState([]);
@@ -11,6 +13,16 @@ export default function Home() {
     const [filter, setFilter] = useState("all");
     const [editingId, setEditingId] = useState(null);
     const [editingTitle, setEditingTitle] = useState("");
+    // const iconRef = useRef(null);
+
+    // //icone
+    // const start = () => {
+    //     iconRef.current?.startAnimation();
+    // };
+
+    // const stop = () => {
+    //     iconRef.current?.stopAnimation();
+    // };
 
     // --- Fetch all items ---
     async function fetchItems() {
@@ -192,6 +204,7 @@ export default function Home() {
                                 <option value="progress">Par progression</option>
                             </select>
                             <button onClick={fetchItems} className="text-sm underline">Rafraîchir</button>
+
                         </div>
                     </section>
 
