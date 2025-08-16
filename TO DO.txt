@@ -34,4 +34,4 @@ Si fini mettre une coche ✅
 
 - Faire un Design sympa
 - Ajouter le logo
-- 
+- Faire un bouton dynamique pour le + ou -
