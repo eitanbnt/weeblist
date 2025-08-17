@@ -28,7 +28,8 @@ Si fini mettre une coche ✅
 
 - Faire en sorte de ne pas rajouter le même titre du même type
 - Rajouter des types 
--
+- Ajouter le type silmucast qui aura une date de sortie et qui apparaîtra toutes les semaines
+- 
 
 ---------Design------------------
 
