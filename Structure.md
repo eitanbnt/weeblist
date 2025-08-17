@@ -1,3 +1,4 @@
+```
 └── 📁weeblist
     └── 📁controllers
         ├── CollectionController.js
@@ -5,6 +6,7 @@
         ├── WorkController.js
     └── 📁lib
         ├── supabase.js
+        ├── utils.ts
     └── 📁models
         ├── types.js
     └── 📁pages
@@ -26,19 +28,26 @@
     └── 📁styles
         ├── globals.css
     └── 📁views
+        └── 📁boutonAnime
+            ├── refresh.jsx
         └── 📁collection
         └── 📁collectionWork
         └── 📁work
     ├── .env
     ├── .env.local
     ├── .gitignore
+    ├── components.json
+    ├── components.jsonold
     ├── MCD actuel.txt
     ├── MCD futur.txt
+    ├── next-env.d.ts
     ├── next.config.js
     ├── package-lock.json
     ├── package.json
     ├── postcss.config.js
     ├── README.md
+    ├── Structure.md
     ├── tailwind.config.js
-    └── TO DO.txt
+    ├── TO DO.txt
+    └── tsconfig.json
 ```

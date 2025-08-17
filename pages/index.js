@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
     const [items, setItems] = useState([]);
     const [title, setTitle] = useState("");
+    const [simulcast, setSimulcast] = useState("");
     const [type, setType] = useState("anime");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
@@ -47,6 +48,23 @@ export default function Home() {
         } catch (err) {
             setErrorMsg(err.message);
         }
+    }
+
+    async function addSimulcast() {
+        if (!title.trim()) return;
+        try {
+            const res = await fetch("/api/collection", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title: title.trim(), type: "simulcast", progress: 0, dateSimulcast: simulcast }),
+            });
+            if (!res.ok) throw new Error("Erreur ajout simulcast");
+            const newItem = await res.json();
+            setItems((prev) => [newItem, ...prev]);
+            setTitle("");
+        } catch (err) {
+            setErrorMsg(err.message);
+        } 
     }
 
     async function updateProgress(id, current, value, type, newProgress) {
@@ -162,6 +180,26 @@ export default function Home() {
                         </div>
                     </section>
 
+                    {/* add Simulcast */}
+                    <section className="mb-4">
+                        <div className="flex flex-col sm:flex-row gap-2">
+                            <h4 className="text-lg font-semibold">Ajouter un Simulcast : </h4>
+                            <input
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="flex-1 border rounded p-2 min-w-[150px]"
+                                placeholder="Titre (ex: One Piece)"
+                            />
+                            <input
+                                type="date"
+                                onChange={(e) => setSimulcast(e.target.value)}
+                                className="border rounded p-2 min-w-[150px]"
+                                placeholder="Date de sortie"
+                            />
+                            <button onClick={addSimulcast} className="bg-blue-600 text-white px-4 py-2 rounded">Ajouter</button>
+                        </div>
+                    </section>
+
                     {/* search / filter / sort */}
                     <section className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
@@ -170,6 +208,7 @@ export default function Home() {
                                 <option value="all">Tous</option>
                                 <option value="anime">Anime</option>
                                 <option value="manga">Manga</option>
+                                <option value="simulcast">Simulcast</option>
                             </select>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
