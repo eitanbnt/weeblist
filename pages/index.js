@@ -246,6 +246,9 @@ export default function Home() {
                                             <>
                                                 <div className="font-medium truncate">{item.title}</div>
                                                 <div className="text-sm text-gray-500">{item.type} • Progression: {item.progress ?? 0}</div>
+                                                {item.type === "simulcast" && item.dateSimulcast && (
+                                                    <div className="text-sm text-gray-500">Sortie du dernier épisode : {new Date(item.dateSimulcast).toLocaleDateString()}</div>
+                                                )}
                                             </>
                                         )}
                                     </div>
