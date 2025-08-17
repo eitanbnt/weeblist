@@ -92,6 +92,34 @@ export default function Home() {
         }
     }
 
+    async function updateProgressSimulcast(id, progress, date){
+        try {
+            progress = progress + 1;
+            let nextDate = date ? new Date(date) : null;
+            if (nextDate && !isNaN(nextDate.getTime())) {
+                nextDate.setDate(nextDate.getDate() + 7); // Ajoute 7 jours à la date
+                date = nextDate.toISOString().slice(0, 10); // format YYYY-MM-DD
+            } else {
+                date = date; // fallback si la date est invalide
+            }
+            console.log("Mise à jour simulcast", progress, date);
+            const res = await fetch(`/api/collection/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ progress: progress, dateSimulcast: date }), // Ajoute 7 jours (en ms) pour le prochain simulcast
+            });
+            if (!res.ok) throw new Error("Erreur mise à jour simulcast");
+            const updated = await res.json();
+            setItems((prev) =>
+                prev.map((it) => (it.id === editingId ? updated : it))
+            );
+            setEditingId(null);
+            setEditingTitle("");
+        } catch (err) {
+            setErrorMsg(err.message);
+        }
+    }
+
     async function removeItem(id) {
         if (!confirm("Supprimer cet élément ?")) return;
         try {
@@ -149,11 +177,23 @@ export default function Home() {
 
     function buttonClass(type, item) {
         if (type === "simulcast") {
-            return (
-                <div className="text-sm text-gray-500">
-                    <span className="font-medium">Prochain épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
-                </div>
-            )
+            if (item.dateSimulcast > new Date().toISOString()) {
+                return (
+                    <div className="text-sm text-gray-500">
+                        <span className="font-medium">Prochain épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
+                        <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
+                        <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded">Suppr</button>
+                    </div>
+                )}else {
+                return (
+                    <div className="text-sm text-gray-500">
+                        <span className="font-medium">Dernier épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
+                        <button onClick={() => updateProgressSimulcast(item.id, item.progress, item.dateSimulcast)} className="bg-green-600 text-white px-3 py-1 rounded">Vu</button>
+                        <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
+                        <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded">Suppr</button>
+                    </div>
+                )
+            }
         } else {
             return (
                 <div className="flex flex-wrap gap-2">
