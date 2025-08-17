@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useRef } from "react";
-// import { RefreshCWIcon } from "../views/boutonAnime/refresh.jsx";
 
 export default function Home() {
     const [items, setItems] = useState([]);
@@ -13,18 +11,7 @@ export default function Home() {
     const [filter, setFilter] = useState("all");
     const [editingId, setEditingId] = useState(null);
     const [editingTitle, setEditingTitle] = useState("");
-    // const iconRef = useRef(null);
 
-    // //icone
-    // const start = () => {
-    //     iconRef.current?.startAnimation();
-    // };
-
-    // const stop = () => {
-    //     iconRef.current?.stopAnimation();
-    // };
-
-    // --- Fetch all items ---
     async function fetchItems() {
         setLoading(true);
         setErrorMsg("");
@@ -44,7 +31,6 @@ export default function Home() {
         fetchItems();
     }, []);
 
-    // --- Add item ---
     async function addItem() {
         if (!title.trim()) return;
         try {
@@ -63,15 +49,14 @@ export default function Home() {
         }
     }
 
-    // --- Update progress ---
     async function updateProgress(id, current, value, type, newProgress) {
         if (type === true) {
             if (current <= 0) return;
-            newProgress = Math.max(current - value, 0); //  Decrement
+            newProgress = Math.max(current - value, 0);
         } else if (type === false) {
-            newProgress = Math.min(current + value); // Increment 
+            newProgress = Math.min(current + value);
         } else {
-            newProgress = 0; // Reset to 0
+            newProgress = 0;
         }
         try {
             const res = await fetch(`/api/collection/${id}`, {
@@ -89,7 +74,6 @@ export default function Home() {
         }
     }
 
-    // --- Delete item ---
     async function removeItem(id) {
         if (!confirm("Supprimer cet élément ?")) return;
         try {
@@ -101,7 +85,6 @@ export default function Home() {
         }
     }
 
-    // --- Edit item ---
     function startEdit(item) {
         setEditingId(item.id);
         setEditingTitle(item.title);
@@ -131,7 +114,6 @@ export default function Home() {
         setEditingTitle("");
     }
 
-    // --- Search / filter / sort ---
     function getDisplayedItems() {
         let list = [...items];
         if (query.trim()) {
@@ -140,32 +122,32 @@ export default function Home() {
                 (it.title || "").toLowerCase().includes(q)
             );
         }
-        if (filter !== "all") list = list.filter((it) => it.type === filter); // Filter by type
-        if (sort === "newest") list.sort((a, b) => (b.id || 0) - (a.id || 0)); // Sort by newest first 
-        if (sort === "alpha") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));// Sort alphabetically
-        if (sort === "progress") list.sort((a, b) => (b.progress || 0) - (a.progress || 0));// Sort by progress
+        if (filter !== "all") list = list.filter((it) => it.type === filter);
+        if (sort === "newest") list.sort((a, b) => (b.id || 0) - (a.id || 0));
+        if (sort === "alpha") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+        if (sort === "progress") list.sort((a, b) => (b.progress || 0) - (a.progress || 0));
         return list;
     }
 
     return (
         <div className="min-h-screen p-4 bg-gray-50 flex justify-center">
-            <div className="w-full max-w-3xl">
-                <header className="flex items-center justify-between mb-4">
-                    <div className="w-full max-w-3xl">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-pink-100 rounded flex items-center justify-center font-bold text-pink-600">WL</div>
-                            <div>
-                                <h1 className="text-2xl font-semibold">WeebList</h1>
-                                <div className="text-sm text-gray-500">Tracker anime & manga</div>
-                            </div>
+            <div className="w-full max-w-4xl">
+                {/* header */}
+                <header className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-pink-100 rounded flex items-center justify-center font-bold text-pink-600">WL</div>
+                        <div>
+                            <h1 className="text-2xl font-semibold">WeebList</h1>
+                            <div className="text-sm text-gray-500">Tracker anime & manga</div>
                         </div>
                     </div>
                 </header>
 
+                {/* main */}
                 <main className="bg-white rounded-2xl shadow p-5">
                     {/* add */}
                     <section className="mb-4">
-                        <div className="flex gap-2 flex-wrap">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
@@ -180,17 +162,17 @@ export default function Home() {
                         </div>
                     </section>
 
-                    {/* search / sort / filter */}
-                    <section className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                        <div className="flex gap-2 items-center">
-                            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher..." className="border rounded p-2" />
+                    {/* search / filter / sort */}
+                    <section className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher..." className="border rounded p-2 flex-1" />
                             <select value={filter} onChange={(e) => setFilter(e.target.value)} className="border rounded p-2">
                                 <option value="all">Tous</option>
                                 <option value="anime">Anime</option>
                                 <option value="manga">Manga</option>
                             </select>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                             <label className="text-sm text-gray-500">Trier :</label>
                             <select value={sort} onChange={(e) => setSort(e.target.value)} className="border rounded p-2">
                                 <option value="newest">Les plus récents</option>
@@ -198,26 +180,28 @@ export default function Home() {
                                 <option value="progress">Par progression</option>
                             </select>
                             <button onClick={fetchItems} className="text-sm underline">Rafraîchir</button>
-
                         </div>
                     </section>
 
+                    {/* erreurs et loading */}
                     {errorMsg && (
                         <div className="mb-4 p-3 bg-red-50 text-red-700 border border-red-100 rounded">{errorMsg}</div>
                     )}
                     {loading && <div className="mb-4">Chargement...</div>}
 
-                    {/* list */}
+                    {/* liste */}
                     <section>
-                        <ul className="space-y-2">
+                        <ul className="space-y-3">
                             {getDisplayedItems().map(item => (
-                                <li key={item.id} className="flex items-center justify-between border rounded p-3">
+                                <li key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between border rounded p-3 gap-3">
                                     <div className="flex-1 min-w-0">
                                         {editingId === item.id ? (
-                                            <div className="flex gap-2 items-center">
-                                                <input value={editingTitle} onChange={(e) => setEditingTitle(e.target.value)} className="border rounded p-2 flex-1" />
-                                                <button onClick={saveEdit} className="bg-blue-500 text-white px-3 py-1 rounded">Enregistrer</button>
-                                                <button onClick={cancelEdit} className="px-3 py-1">Annuler</button>
+                                            <div className="flex flex-col sm:flex-row gap-2 items-center">
+                                                <input value={editingTitle} onChange={(e) => setEditingTitle(e.target.value)} className="border rounded p-2 flex-1 min-w-[100px]" />
+                                                <div className="flex gap-2">
+                                                    <button onClick={saveEdit} className="bg-blue-500 text-white px-3 py-1 rounded">Enregistrer</button>
+                                                    <button onClick={cancelEdit} className="px-3 py-1">Annuler</button>
+                                                </div>
                                             </div>
                                         ) : (
                                             <>
@@ -227,12 +211,13 @@ export default function Home() {
                                         )}
                                     </div>
 
-                                    <div className="flex gap-2 ml-4">
+                                    {/* boutons actions */}
+                                    <div className="flex flex-wrap gap-2">
                                         <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
                                         <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
                                         <button onClick={() => updateProgress(item.id, 0)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset</button>
                                         <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
-                                        <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
+                                        <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded">Suppr</button>
                                     </div>
                                 </li>
                             ))}
