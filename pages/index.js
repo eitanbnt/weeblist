@@ -64,7 +64,7 @@ export default function Home() {
             setTitle("");
         } catch (err) {
             setErrorMsg(err.message);
-        } 
+        }
     }
 
     async function updateProgress(id, current, value, type, newProgress) {
@@ -145,6 +145,26 @@ export default function Home() {
         if (sort === "alpha") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
         if (sort === "progress") list.sort((a, b) => (b.progress || 0) - (a.progress || 0));
         return list;
+    }
+
+    function buttonClass(type, item) {
+        if (type === "simulcast") {
+            return (
+                <div className="text-sm text-gray-500">
+                    <span className="font-medium">Prochain épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
+                </div>
+            )
+        } else {
+            return (
+                <div className="flex flex-wrap gap-2">
+                    <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
+                    <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
+                    <button onClick={() => updateProgress(item.id, 0)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset</button>
+                    <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
+                    <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded">Suppr</button>
+                </div>
+            )
+        }
     }
 
     return (
@@ -246,21 +266,12 @@ export default function Home() {
                                             <>
                                                 <div className="font-medium truncate">{item.title}</div>
                                                 <div className="text-sm text-gray-500">{item.type} • Progression: {item.progress ?? 0}</div>
-                                                {item.type === "simulcast" && item.dateSimulcast && (
-                                                    <div className="text-sm text-gray-500">Sortie du dernier épisode : {new Date(item.dateSimulcast).toLocaleDateString()}</div>
-                                                )}
                                             </>
                                         )}
                                     </div>
 
                                     {/* boutons actions */}
-                                    <div className="flex flex-wrap gap-2">
-                                        <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
-                                        <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
-                                        <button onClick={() => updateProgress(item.id, 0)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset</button>
-                                        <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
-                                        <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded">Suppr</button>
-                                    </div>
+                                    <div>{buttonClass(item.type, item)}</div>
                                 </li>
                             ))}
                         </ul>
