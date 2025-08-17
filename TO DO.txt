@@ -2,7 +2,7 @@ Si fini mettre une coche ✅
 
 -----------Increment---------------------
 
-- Avoir qu'une seule fonction pour incrémenter et décrémenter (en paramètre avoir un booléan qui décide de quoi faire)
+- Avoir qu'une seule fonction pour incrémenter et décrémenter et reset (en paramètre avoir un booléan qui décide de quoi faire)✅
 - Refaire en sorte d'avoir + ou - 10, 100, le nombre d'épisode, et à la fin un pourcentage 
 - 
 

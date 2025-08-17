@@ -64,7 +64,15 @@ export default function Home() {
     }
 
     // --- Update progress ---
-    async function updateProgress(id, newProgress) {
+    async function updateProgress(id, current, value, type, newProgress) {
+        if (type === true) {
+            if (current <= 0) return;
+            newProgress = Math.max(current - value, 0); //  Decrement
+        } else if (type === false) {
+            newProgress = Math.min(current + value); // Increment 
+        } else {
+            newProgress = 0; // Reset to 0
+        }
         try {
             const res = await fetch(`/api/collection/${id}`, {
                 method: "PUT",
@@ -79,20 +87,6 @@ export default function Home() {
         } catch (err) {
             setErrorMsg(err.message);
         }
-    }
-
-    function incrementProgress(id, current, inc) {
-        if (current >= 100) return;
-        updateProgress(id, Math.min(current + inc, 100));
-    }
-
-    function decrementProgress(id, current, dec) {
-        if (current <= 0) return;
-        updateProgress(id, Math.max(current - dec, 0));
-    }
-
-    function resetProgress(id) {
-        updateProgress(id, 0);
     }
 
     // --- Delete item ---
@@ -146,10 +140,10 @@ export default function Home() {
                 (it.title || "").toLowerCase().includes(q)
             );
         }
-        if (filter !== "all") list = list.filter((it) => it.type === filter);
-        if (sort === "newest") list.sort((a, b) => (b.id || 0) - (a.id || 0));
-        if (sort === "alpha") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
-        if (sort === "progress") list.sort((a, b) => (b.progress || 0) - (a.progress || 0));
+        if (filter !== "all") list = list.filter((it) => it.type === filter); // Filter by type
+        if (sort === "newest") list.sort((a, b) => (b.id || 0) - (a.id || 0)); // Sort by newest first 
+        if (sort === "alpha") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));// Sort alphabetically
+        if (sort === "progress") list.sort((a, b) => (b.progress || 0) - (a.progress || 0));// Sort by progress
         return list;
     }
 
@@ -234,9 +228,9 @@ export default function Home() {
                                     </div>
 
                                     <div className="flex gap-2 ml-4">
-                                        <button onClick={() => decrementProgress(item.id, item.progress ?? 0, 1)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
-                                        <button onClick={() => incrementProgress(item.id, item.progress ?? 0, 1)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
-                                        <button onClick={() => resetProgress(item.id)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset</button>
+                                        <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)} className="bg-red-500 text-white px-3 py-1 rounded">-1</button>
+                                        <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)} className="bg-green-500 text-white px-3 py-1 rounded">+1</button>
+                                        <button onClick={() => updateProgress(item.id, 0)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset</button>
                                         <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
                                         <button onClick={() => removeItem(item.id)} className="bg-red-500 text-white px-3 py-1 rounded">Suppr</button>
                                     </div>
