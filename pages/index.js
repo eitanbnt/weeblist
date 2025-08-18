@@ -92,7 +92,7 @@ export default function Home() {
         }
     }
 
-    async function updateProgressSimulcast(id, progress, date){
+    async function updateProgressSimulcast(id, progress, date) {
         try {
             progress = progress + 1;
             let nextDate = date ? new Date(date) : null;
@@ -108,6 +108,14 @@ export default function Home() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ progress: progress, dateSimulcast: date }), // Ajoute 7 jours (en ms) pour le prochain simulcast
             });
+            await fetchItems(); // Rafraîchit la liste après mise à jour
+            // setItems(prev =>
+            //     prev.map(item =>
+            //         item.id === id
+            //             ? { ...item, progress: item.progress + 1, dateSimulcast: new Date().toISOString() }
+            //             : item
+            //     )
+            // );
             if (!res.ok) throw new Error("Erreur mise à jour simulcast");
             const updated = await res.json();
             setItems((prev) =>
@@ -184,7 +192,8 @@ export default function Home() {
                         <button onClick={() => startEdit(item)} className="bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
                         <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded">Suppr</button>
                     </div>
-                )}else {
+                )
+            } else {
                 return (
                     <div className="text-sm text-gray-500">
                         <span className="font-medium">Dernier épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
