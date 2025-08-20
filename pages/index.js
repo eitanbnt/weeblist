@@ -34,6 +34,12 @@ export default function Home() {
         return () => subscription.unsubscribe();
     }, [router]);
 
+    async function handleLogout() {
+        await supabase.auth.signOut();
+        setSession(null);
+        router.push("/login");
+    }
+
     // Fetch collection
     async function fetchItems() {
         if (!session) return; // sécurité
@@ -336,6 +342,13 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
+                    {/* 👇 bouton déconnexion */}
+                    <button
+                        onClick={handleLogout}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                    >
+                        Déconnexion
+                    </button>
                 </header>
 
                 {/* main */}
