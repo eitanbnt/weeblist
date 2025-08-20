@@ -13,65 +13,59 @@ export default function Login() {
         e.preventDefault();
         setLoading(true);
         setErrorMsg("");
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-        setLoading(false);
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) setErrorMsg(error.message);
         else router.push("/");
+        setLoading(false);
     }
 
     async function handleSignup(e) {
         e.preventDefault();
         setLoading(true);
         setErrorMsg("");
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-        });
-        setLoading(false);
+        const { error } = await supabase.auth.signUp({ email, password });
         if (error) setErrorMsg(error.message);
-        else alert("Compte créé ! Vérifie tes mails.");
+        else alert("Vérifie tes emails pour confirmer ton compte !");
+        setLoading(false);
     }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow">
-                <h1 className="text-2xl font-semibold mb-4">Connexion WeebList</h1>
-                {errorMsg && <div className="p-2 mb-3 bg-red-100 text-red-600">{errorMsg}</div>}
-
-                <form className="space-y-3">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full border p-2 rounded"
-                    />
-                    <input
-                        type="password"
-                        placeholder="Mot de passe"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full border p-2 rounded"
-                    />
-                    <button
-                        onClick={handleLogin}
-                        disabled={loading}
-                        className="w-full bg-blue-600 text-white p-2 rounded"
-                    >
-                        {loading ? "Connexion..." : "Se connecter"}
-                    </button>
-                    <button
-                        onClick={handleSignup}
-                        type="button"
-                        className="w-full border p-2 rounded"
-                    >
-                        Créer un compte
-                    </button>
-                </form>
-            </div>
+            <form
+                onSubmit={handleLogin}
+                className="bg-white shadow p-6 rounded-lg w-80 space-y-4"
+            >
+                <h1 className="text-xl font-semibold text-center">Se connecter</h1>
+                {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
+                <input
+                    type="email"
+                    placeholder="Email"
+                    className="w-full border rounded p-2"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                    type="password"
+                    placeholder="Mot de passe"
+                    className="w-full border rounded p-2"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white rounded py-2"
+                    disabled={loading}
+                >
+                    {loading ? "..." : "Connexion"}
+                </button>
+                <button
+                    onClick={handleSignup}
+                    className="w-full bg-gray-200 rounded py-2 text-sm"
+                    disabled={loading}
+                >
+                    Créer un compte
+                </button>
+            </form>
         </div>
     );
 }
