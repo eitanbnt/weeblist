@@ -8,3 +8,9 @@ export default function handler(req, res) {
     res.status(405).end(); // Méthode non autorisée
 }
 // Pour les méthodes PUT et DELETE, elles sont gérées dans [id].js
+const { data: { user } } = await supabase.auth.getUser();
+
+const { data, error } = await supabase
+  .from("collection")
+  .insert([{ title, type, progress: 0, user_id: user.id }])
+  .select();

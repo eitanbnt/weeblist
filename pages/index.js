@@ -109,13 +109,7 @@ export default function Home() {
                 body: JSON.stringify({ progress: progress, dateSimulcast: date }), // Ajoute 7 jours (en ms) pour le prochain simulcast
             });
             await fetchItems(); // Rafraîchit la liste après mise à jour
-            // setItems(prev =>
-            //     prev.map(item =>
-            //         item.id === id
-            //             ? { ...item, progress: item.progress + 1, dateSimulcast: new Date().toISOString() }
-            //             : item
-            //     )
-            // );
+
             if (!res.ok) throw new Error("Erreur mise à jour simulcast");
             const updated = await res.json();
             setItems((prev) =>
