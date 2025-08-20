@@ -1,10 +1,39 @@
-// This file is part of the Weeblist project.
-// It handles API requests for the collection list and creation.
-import collectionController from "../../../controllers/CollectionController";// Adjusted import path to match the new structure
+// pages/api/collection/index.js
+import { supabase } from "../../../lib/supabaseClient";
 
-export default function handler(req, res) {
-    if (req.method === "GET") return collectionController.list(req, res);
-    if (req.method === "POST") return collectionController.create(req, res);
-    res.status(405).end(); // Méthode non autorisée
+export default async function handler(req, res) {
+    if (req.method === "GET") {
+        // Récupération de l’utilisateur connecté
+        const { data: { user }, error: userError } = await supabase.auth.getUser(req.headers.authorization?.replace("Bearer ", ""));
+        if (userError || !user) return res.status(401).json({ error: "Non autorisé" });
+
+        // Sélectionner uniquement ses items
+        const { data, error } = await supabase
+            .from("collection")
+            .select("*")
+            .eq("user_id", user.id);
+
+        if (error) return res.status(500).json({ error: error.message });
+        return res.status(200).json(data);
+    }
+
+    if (req.method === "POST") {
+        const { title, type, progress, dateSimulcast } = req.body;
+
+        const { data: { user }, error: userError } = await supabase.auth.getUser(req.headers.authorization?.replace("Bearer ", ""));
+        if (userError || !user) return res.status(401).json({ error: "Non autorisé" });
+
+        const { data, error } = await supabase
+            .from("collection")
+            .insert([
+                { title, type, progress, dateSimulcast, user_id: user.id }
+            ])
+            .select()
+            .single();
+
+        if (error) return res.status(500).json({ error: error.message });
+        return res.status(201).json(data);
+    }
+
+    return res.status(405).end();
 }
-// Pour les méthodes PUT et DELETE, elles sont gérées dans [id].js
