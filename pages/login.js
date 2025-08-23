@@ -21,12 +21,26 @@ export default function Login() {
 
     async function handleSignup(e) {
         e.preventDefault();
-        setLoading(true);
         setErrorMsg("");
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) setErrorMsg(error.message);
-        else alert("Vérifie tes emails pour confirmer ton compte !");
-        setLoading(false);
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+            if (error.message.includes("already registered")) {
+                setErrorMsg("Un compte existe déjà avec cet email !");
+            } else {
+                setErrorMsg(error.message);
+            }
+        } else {
+            alert("Compte créé ! Vérifiez vos emails pour valider.");
+        }
+    }
+
+    async function handleResetPassword() {
+        if (!email) return alert("Veuillez entrer votre email");
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: "https://weeblist.vercel.app/reset", // ✅ production
+        });
+        if (error) alert(error.message);
+        else alert("Email de réinitialisation envoyé !");
     }
 
     return (
@@ -51,6 +65,13 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+                <button
+                    type="button"
+                    onClick={handleResetPassword}
+                    className="text-sm text-blue-600 hover:underline"
+                >
+                    Mot de passe oublié ?
+                </button>
                 <button
                     type="submit"
                     className="w-full bg-blue-600 text-white rounded py-2"

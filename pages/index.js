@@ -342,6 +342,9 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
+                    <div className="text-sm text-gray-500">
+                        Connecté en tant que {session.user.email}
+                    </div>
                     {/* 👇 bouton déconnexion */}
                     <button
                         onClick={handleLogout}
