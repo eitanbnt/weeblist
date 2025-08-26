@@ -85,14 +85,19 @@ export default function Home() {
         try {
             const res = await fetch("/api/collection", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session.access_token}`,
+                },
                 body: JSON.stringify({
-                    title: title.trim(),
-                    type: "simulcast",
-                    progress: 0,
-                    dateSimulcast: simulcast,
+                    title: title.trim(), // le titre de l'anime
+                    type: "simulcast",//forcer le type à simulcast
+                    progress: 0,//initialisation de la progression à 0
+                    dateSimulcast: simulcast,//ajout de la date de simulcast
                 }),
             });
+            console.log(simulcast);
+            console.log(res);
             if (!res.ok) throw new Error("Erreur ajout simulcast");
             const newItem = await res.json();
             setItems((prev) => [newItem, ...prev]);
