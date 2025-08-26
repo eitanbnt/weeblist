@@ -14,8 +14,10 @@ Si fini mettre une coche ✅
 
 -------Connexion-----------
 
-- Refaire le système de connexion
+- Refaire le système de connexion ✅
 - En attendant désactiver la connexion ✅
+- Bloquer la création de compte si il existe l'adresse mail fonctionne
+- Pouvoir réinitialiser le mot de passe
 -
 
 ----------API----------------
@@ -29,10 +31,14 @@ Si fini mettre une coche ✅
 - Faire en sorte de ne pas rajouter le même titre du même type
 - Rajouter des types 
 - Ajouter le type silmucast qui aura une date de sortie et qui apparaîtra toutes les semaines ✅
-- Faire en sorte de changer le type
+- Faire en sorte de changer le type 
+-
 
 ---------Design------------------
 
 - Faire un Design sympa
 - Ajouter le logo
 - Faire un bouton dynamique pour le + ou -
+- Faire des statistiques
+- design de Sidebar grâce https://vm.tiktok.com/ZNdXAsLgL/
+- 
