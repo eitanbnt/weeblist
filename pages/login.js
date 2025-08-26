@@ -17,18 +17,11 @@ export default function Login() {
         setErrorMsg("");
         setLoading(true);
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         setLoading(false);
 
-        if (error) {
-            setErrorMsg(error.message);
-        } else {
-            router.push("/");
-        }
+        if (error) setErrorMsg(error.message);
+        else router.push("/");
     }
 
     async function handleSignup(e) {
@@ -36,11 +29,7 @@ export default function Login() {
         setErrorMsg("");
         setLoading(true);
 
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-        });
-
+        const { error } = await supabase.auth.signUp({ email, password });
         setLoading(false);
 
         if (error) {
@@ -50,7 +39,7 @@ export default function Login() {
                 setErrorMsg(error.message);
             }
         } else {
-            alert("Compte créé ! Vérifiez vos emails pour confirmer votre inscription.");
+            alert("Compte créé ! Vérifiez vos emails pour confirmer.");
             setMode("login");
         }
     }
@@ -65,37 +54,34 @@ export default function Login() {
         });
 
         setLoading(false);
-
-        if (error) {
-            setErrorMsg(error.message);
-        } else {
-            alert("Un email de réinitialisation a été envoyé !");
-        }
+        if (error) setErrorMsg(error.message);
+        else alert("Un email de réinitialisation a été envoyé !");
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-            <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md">
-                <h1 className="text-2xl font-bold mb-4">
-                    {mode === "login" ? "Connexion" : "Créer un compte"}
-                </h1>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
+            <div className="bg-white/90 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-md">
+                <div className="text-center mb-6">
+                    <div className="text-4xl font-bold text-pink-600">WeebList</div>
+                    <p className="text-gray-500 text-sm">
+                        {mode === "login" ? "Connectez-vous pour accéder à votre collection" : "Créez votre compte pour commencer"}
+                    </p>
+                </div>
 
                 {errorMsg && (
-                    <div className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded">
-                        {errorMsg}
-                    </div>
+                    <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-lg">{errorMsg}</div>
                 )}
 
                 <form
                     onSubmit={mode === "login" ? handleLogin : handleSignup}
-                    className="space-y-3"
+                    className="space-y-4"
                 >
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Email"
-                        className="w-full border rounded p-2"
+                        className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-400"
                         required
                     />
                     <input
@@ -103,13 +89,13 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Mot de passe"
-                        className="w-full border rounded p-2"
-                        required={mode === "signup" || mode === "login"}
+                        className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                        required
                     />
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+                        className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3 rounded-lg font-medium shadow-md transition"
                     >
                         {loading
                             ? "Chargement..."
@@ -120,30 +106,28 @@ export default function Login() {
                 </form>
 
                 {mode === "login" ? (
-                    <div className="mt-4 text-sm text-center">
-                        Pas encore de compte ?{" "}
+                    <div className="mt-6 text-sm text-center text-gray-600">
                         <button
                             onClick={() => setMode("signup")}
-                            className="text-blue-600 underline"
+                            className="text-pink-600 font-medium hover:underline"
                         >
                             Créer un compte
-                        </button>
-                        <br />
+                        </button>{" "}
+                        ·{" "}
                         <button
                             onClick={handleResetPassword}
-                            className="mt-2 text-blue-600 underline"
+                            className="text-blue-600 font-medium hover:underline"
                         >
                             Mot de passe oublié ?
                         </button>
                     </div>
                 ) : (
-                    <div className="mt-4 text-sm text-center">
-                        Déjà un compte ?{" "}
+                    <div className="mt-6 text-sm text-center text-gray-600">
                         <button
                             onClick={() => setMode("login")}
-                            className="text-blue-600 underline"
+                            className="text-pink-600 font-medium hover:underline"
                         >
-                            Se connecter
+                            Déjà un compte ? Se connecter
                         </button>
                     </div>
                 )}
