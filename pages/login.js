@@ -59,78 +59,59 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
-            <div className="bg-white/90 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-md">
-                <div className="text-center mb-6">
-                    <div className="text-4xl font-bold text-pink-600">WeebList</div>
-                    <p className="text-gray-500 text-sm">
-                        {mode === "login" ? "Connectez-vous pour accéder à votre collection" : "Créez votre compte pour commencer"}
-                    </p>
-                </div>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100 p-4">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md w-full max-w-md">
+                <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">WeebList</h1>
 
                 {errorMsg && (
-                    <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-lg">{errorMsg}</div>
+                    <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">{errorMsg}</div>
                 )}
 
-                <form
-                    onSubmit={mode === "login" ? handleLogin : handleSignup}
-                    className="space-y-4"
-                >
+                <form className="space-y-3" onSubmit={handleLogin}>
                     <input
                         type="email"
+                        placeholder="Email"
+                        className="w-full border rounded-lg p-2"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                        className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-400"
                         required
                     />
                     <input
                         type="password"
+                        placeholder="Mot de passe"
+                        className="w-full border rounded-lg p-2"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Mot de passe"
-                        className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-400"
                         required
                     />
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3 rounded-lg font-medium shadow-md transition"
-                    >
-                        {loading
-                            ? "Chargement..."
-                            : mode === "login"
-                                ? "Se connecter"
-                                : "Créer un compte"}
-                    </button>
+
+                    <div className="flex flex-col sm:flex-row gap-2">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow"
+                        >
+                            {loading ? "Connexion..." : "Connexion"}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleSignup}
+                            disabled={loading}
+                            className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg shadow"
+                        >
+                            Inscription
+                        </button>
+                    </div>
                 </form>
 
-                {mode === "login" ? (
-                    <div className="mt-6 text-sm text-center text-gray-600">
-                        <button
-                            onClick={() => setMode("signup")}
-                            className="text-pink-600 font-medium hover:underline"
-                        >
-                            Créer un compte
-                        </button>{" "}
-                        ·{" "}
-                        <button
-                            onClick={handleResetPassword}
-                            className="text-blue-600 font-medium hover:underline"
-                        >
-                            Mot de passe oublié ?
-                        </button>
-                    </div>
-                ) : (
-                    <div className="mt-6 text-sm text-center text-gray-600">
-                        <button
-                            onClick={() => setMode("login")}
-                            className="text-pink-600 font-medium hover:underline"
-                        >
-                            Déjà un compte ? Se connecter
-                        </button>
-                    </div>
-                )}
+                <div className="mt-4 text-center">
+                    <button
+                        onClick={handleResetPassword}
+                        className="text-sm text-blue-600 hover:underline"
+                    >
+                        Mot de passe oublié ?
+                    </button>
+                </div>
             </div>
         </div>
     );

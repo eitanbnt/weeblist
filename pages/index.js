@@ -162,25 +162,50 @@ export default function Home() {
         return list;
     }
 
+    function cancelEdit() {
+        setEditingId(null);
+        setEditingTitle("");
+    }
+
+    async function saveEdit() {
+        if (!editingTitle.trim() || !session) return;
+        try {
+            const res = await fetch(`/api/collection/${editingId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({ title: editingTitle.trim(), type: type }),
+            });
+            if (!res.ok) throw new Error("Erreur mise à jour");
+            const updated = await res.json();
+            setItems((prev) => prev.map((it) => (it.id === editingId ? updated : it)));
+            cancelEdit();
+        } catch (err) {
+            setErrorMsg(err.message);
+        }
+    }
+
     if (!session) return <div className="flex items-center justify-center h-screen text-lg">Chargement...</div>;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 p-6 flex justify-center">
-            <div className="w-full max-w-5xl bg-white shadow-lg rounded-2xl p-6">
+        <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 p-4 sm:p-6 flex justify-center">
+            <div className="w-full max-w-5xl bg-white shadow-lg rounded-2xl p-4 sm:p-6">
                 {/* HEADER */}
-                <header className="flex items-center justify-between mb-6 border-b pb-4">
+                <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 border-b pb-4">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-pink-500 text-white rounded-xl flex items-center justify-center font-bold shadow">WL</div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-800">WeebList</h1>
+                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">WeebList</h1>
                             <p className="text-sm text-gray-500">Ton tracker anime & manga ✨</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <span className="text-sm text-gray-600">Connecté : {session.user.email}</span>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                        <span className="text-xs sm:text-sm text-gray-600">Connecté : {session.user.email}</span>
                         <button
                             onClick={handleLogout}
-                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow"
+                            className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow text-sm sm:text-base"
                         >
                             Déconnexion
                         </button>
@@ -188,66 +213,88 @@ export default function Home() {
                 </header>
 
                 {/* FORMULAIRE AJOUT */}
-                <section className="grid md:grid-cols-2 gap-4 mb-6">
+                <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
                         <h2 className="text-lg font-semibold mb-2">Ajouter un élément</h2>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="flex-1 border rounded-lg p-2"
+                                className="flex-1 border rounded-lg p-2 w-full"
                                 placeholder="Titre (ex: One Piece)"
                             />
-                            <select value={type} onChange={(e) => setType(e.target.value)} className="border rounded-lg p-2">
+                            <select
+                                value={type}
+                                onChange={(e) => setType(e.target.value)}
+                                className="border rounded-lg p-2 w-full sm:w-auto"
+                            >
                                 <option value="anime">Anime</option>
                                 <option value="manga">Manga</option>
                             </select>
-                            <button onClick={addItem} className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow">Ajouter</button>
+                            <button
+                                onClick={addItem}
+                                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow w-full sm:w-auto"
+                            >
+                                Ajouter
+                            </button>
                         </div>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
                         <h2 className="text-lg font-semibold mb-2">Ajouter un Simulcast</h2>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="flex-1 border rounded-lg p-2"
+                                className="flex-1 border rounded-lg p-2 w-full"
                                 placeholder="Titre (ex: Jujutsu Kaisen)"
                             />
                             <input
                                 type="date"
                                 onChange={(e) => setSimulcast(e.target.value)}
-                                className="border rounded-lg p-2"
+                                className="border rounded-lg p-2 w-full sm:w-auto"
                             />
-                            <button onClick={addSimulcast} className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow">Ajouter</button>
+                            <button
+                                onClick={addSimulcast}
+                                className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow w-full sm:w-auto"
+                            >
+                                Ajouter
+                            </button>
                         </div>
                     </div>
                 </section>
 
                 {/* RECHERCHE / TRI */}
                 <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
-                    <div className="flex gap-2 flex-1">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                         <input
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Rechercher..."
-                            className="border rounded-lg p-2 flex-1"
+                            className="border rounded-lg p-2 flex-1 w-full"
                         />
-                        <select value={filter} onChange={(e) => setFilter(e.target.value)} className="border rounded-lg p-2">
+                        <select
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                            className="border rounded-lg p-2 w-full sm:w-auto"
+                        >
                             <option value="all">Tous</option>
                             <option value="anime">Anime</option>
                             <option value="manga">Manga</option>
                             <option value="simulcast">Simulcast</option>
                         </select>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                         <label className="text-sm text-gray-600">Trier :</label>
-                        <select value={sort} onChange={(e) => setSort(e.target.value)} className="border rounded-lg p-2">
+                        <select
+                            value={sort}
+                            onChange={(e) => setSort(e.target.value)}
+                            className="border rounded-lg p-2 w-full sm:w-auto"
+                        >
                             <option value="newest">Les plus récents</option>
                             <option value="alpha">A → Z</option>
                             <option value="progress">Par progression</option>
                         </select>
-                        <button onClick={fetchItems} className="text-sm underline">Rafraîchir</button>
+                        <button onClick={fetchItems} className="text-sm underline w-full sm:w-auto">Rafraîchir</button>
                     </div>
                 </section>
 
@@ -257,23 +304,94 @@ export default function Home() {
                     {loading && <div className="mb-4">Chargement...</div>}
 
                     <ul className="space-y-3">
-                        {getDisplayedItems().map((item) => (
-                            <li key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50 border rounded-xl p-4 shadow-sm">
+                        {getDisplayedItems().map(item => (
+                            <li
+                                key={item.id}
+                                className="flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50 border rounded-xl p-4 shadow-sm gap-3"
+                            >
                                 <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-gray-800 truncate">{item.title}</div>
-                                    <div className="text-sm text-gray-500">{item.type} • Progression: {item.progress ?? 0}</div>
+                                    {editingId === item.id ? (
+                                        <div className="flex flex-col sm:flex-row gap-2 items-center w-full">
+                                            <input
+                                                value={editingTitle}
+                                                onChange={(e) => setEditingTitle(e.target.value)}
+                                                className="border rounded-lg p-2 flex-1 min-w-[100px]"
+                                                placeholder={item.title}
+                                            />
+                                            <select
+                                                value={item.type}
+                                                onChange={(e) => setType(e.target.value)}//permettre de changer le type 
+                                                className="border rounded-lg p-2 w-full sm:w-auto"
+                                            >
+                                                <option value="anime">Anime</option>
+                                                <option value="manga">Manga</option> 
+                                                <option value="simulcast">Simulcast</option>
+                                                <option value="film">Film</option>
+                                                <option value="one-shot">One-Shot</option>
+                                                <option value="tv">Série TV</option>
+                                                <option value="autre">autre</option>
+                                            </select>
+                                            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                                <button
+                                                    onClick={saveEdit}
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow w-full sm:w-auto"
+                                                >
+                                                    Enregistrer
+                                                </button>
+                                                <button
+                                                    onClick={cancelEdit}
+                                                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg shadow w-full sm:w-auto"
+                                                >
+                                                    Annuler
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="font-semibold text-gray-800 truncate">{item.title}</div>
+                                            <div className="text-sm text-gray-500">{item.type} • Progression: {item.progress ?? 0}</div>
+                                        </>
+                                    )}
                                 </div>
-                                <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                                    <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)} className="bg-red-500 text-white px-3 py-1 rounded-lg">-1</button>
-                                    <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)} className="bg-green-500 text-white px-3 py-1 rounded-lg">+1</button>
-                                    <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded-lg">Suppr</button>
-                                </div>
+
+                                {/* boutons actions */}
+                                {editingId !== item.id && (
+                                    <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto">
+                                        <button
+                                            onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)}
+                                            className="bg-red-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto"
+                                        >
+                                            -1
+                                        </button>
+                                        <button
+                                            onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)}
+                                            className="bg-green-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto"
+                                        >
+                                            +1
+                                        </button>
+                                        <button
+                                            onClick={() => setEditingId(item.id)}
+                                            className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => removeItem(item.id)}
+                                            className="bg-red-600 text-white px-3 py-1 rounded-lg w-full sm:w-auto"
+                                        >
+                                            Suppr
+                                        </button>
+                                    </div>
+                                )}
                             </li>
                         ))}
                     </ul>
 
+
                     {getDisplayedItems().length === 0 && !loading && (
-                        <div className="text-center text-sm text-gray-500 mt-6">Aucun élément à afficher.</div>
+                        <div className="text-center text-sm text-gray-500 mt-6">
+                            Aucun élément à afficher.
+                        </div>
                     )}
                 </section>
             </div>
