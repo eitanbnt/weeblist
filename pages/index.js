@@ -187,6 +187,27 @@ export default function Home() {
         }
     }
 
+    async function updateType(id, newType) {
+        console.log("Changement type", id, newType);
+        try {
+            const res = await fetch(`/api/collection/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type: newType }),
+            });
+            if (!res.ok) throw new Error("Erreur mise à jour type");
+            const updated = await res.json();
+            console.log("Type mis à jour", updated);
+            // Mettre à jour la liste en local
+            setItems((prev) =>
+                prev.map((it) => (it.id === id ? updated : it))
+            );
+        } catch (err) {
+            setErrorMsg(err.message);
+        }
+    }
+
+
     if (!session) return <div className="flex items-center justify-center h-screen text-lg">Chargement...</div>;
 
     return (
@@ -320,16 +341,16 @@ export default function Home() {
                                             />
                                             <select
                                                 value={item.type}
-                                                onChange={(e) => setType(e.target.value)}//permettre de changer le type 
+                                                onChange={(e) => updateType(item.id, e.target.value)} // on appelle une fonction dédiée
                                                 className="border rounded-lg p-2 w-full sm:w-auto"
                                             >
                                                 <option value="anime">Anime</option>
-                                                <option value="manga">Manga</option> 
+                                                <option value="manga">Manga</option>
                                                 <option value="simulcast">Simulcast</option>
                                                 <option value="film">Film</option>
                                                 <option value="one-shot">One-Shot</option>
                                                 <option value="tv">Série TV</option>
-                                                <option value="autre">autre</option>
+                                                <option value="autre">Autre</option>
                                             </select>
                                             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                                                 <button
