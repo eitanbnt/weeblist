@@ -36,9 +36,10 @@ Si fini mettre une coche ✅
 
 ---------Design------------------
 
-- Faire un Design sympa
+- Faire un Design sympa ✅
 - Ajouter le logo
 - Faire un bouton dynamique pour le + ou -
 - Faire des statistiques
 - design de Sidebar grâce https://vm.tiktok.com/ZNdXAsLgL/
+- Refaire le design en responsive
 - 
