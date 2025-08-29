@@ -64,7 +64,7 @@ export default function Home() {
         if (!title.trim() || !session) return;
         let dateSimulcast = new Date().toISOString().slice(0, 10);
         let typeDefaut = type;
-        if (type === "") {typeDefaut = "anime"; }
+        if (type === "") { typeDefaut = "anime"; }
         try {
             const res = await fetch("/api/collection", {
                 method: "POST",
@@ -154,7 +154,10 @@ export default function Home() {
             console.log("Mise à jour simulcast", progress, date);
             const res = await fetch(`/api/collection/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session.access_token}`,
+                },
                 body: JSON.stringify({ progress: progress, dateSimulcast: date }), // Ajoute 7 jours (en ms) pour le prochain simulcast
             });
             if (!res.ok) throw new Error("Erreur mise à jour simulcast");
@@ -164,6 +167,9 @@ export default function Home() {
             );
             setEditingId(null);
             setEditingTitle("");
+            setItems((prev) =>
+                prev.map((it) => (it.id === id ? updated : it))
+            );
         } catch (err) {
             setErrorMsg(err.message);
         }
@@ -259,7 +265,7 @@ export default function Home() {
                 return (
                     <div className="text-sm text-gray-500">
                         <span className="font-medium">Prochain épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
-                        <button onClick={() => setEditingId(item)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
+                        <button onClick={() => setEditingId(item.id)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
                         <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Suppr</button>
                     </div>
                 )
@@ -268,7 +274,7 @@ export default function Home() {
                     <div className="text-sm text-gray-500">
                         <span className="font-medium">Dernier épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
                         <button onClick={() => updateProgressSimulcast(item.id, item.progress, item.dateSimulcast)} className="bg-green-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Vu</button>
-                        <button onClick={() => setEditingId(item)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
+                        <button onClick={() => setEditingId(item.id)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
                         <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Suppr</button>
                     </div>
                 )
@@ -279,7 +285,7 @@ export default function Home() {
                     <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)} className="bg-red-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto">-1</button>
                     <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)} className="bg-green-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto">+1</button>
                     <button onClick={() => updateProgress(item.id, 0)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset</button>
-                    <button onClick={() => setEditingId(item)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
+                    <button onClick={() => setEditingId(item.id)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
                     <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Suppr</button>
                 </div>
             )
@@ -461,37 +467,8 @@ export default function Home() {
                                         </>
                                     )}
                                 </div>
-
                                 {/* boutons actions */}
                                 {buttonClass(item.type, item)}
-                                {/* {editingId !== item.id && (
-                                    <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto">
-                                        <button
-                                            onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)}
-                                            className="bg-red-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto"
-                                        >
-                                            -1
-                                        </button>
-                                        <button
-                                            onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)}
-                                            className="bg-green-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto"
-                                        >
-                                            +1
-                                        </button>
-                                        <button
-                                            onClick={() => setEditingId(item.id)}
-                                            className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => removeItem(item.id)}
-                                            className="bg-red-600 text-white px-3 py-1 rounded-lg w-full sm:w-auto"
-                                        >
-                                            Suppr
-                                        </button>
-                                    </div> */}
-                                {/* )} */}
                             </li>
                         ))}
                     </ul>
