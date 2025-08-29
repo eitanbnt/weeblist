@@ -6,7 +6,7 @@ export default function Home() {
     const [items, setItems] = useState([]);
     const [title, setTitle] = useState("");
     const [simulcast, setSimulcast] = useState("");
-    const [type, setType] = useState("anime");
+    const [type, setType] = useState("");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [query, setQuery] = useState("");
@@ -59,6 +59,7 @@ export default function Home() {
         if (session) fetchItems();
     }, [session]);
 
+    // Ajouter un élément
     async function addItem() {
         if (!title.trim() || !session) return;
         try {
@@ -80,6 +81,7 @@ export default function Home() {
         }
     }
 
+    // Ajouter un simulcast
     async function addSimulcast() {
         if (!title.trim()) return;
         try {
@@ -107,6 +109,7 @@ export default function Home() {
         }
     }
 
+    // Mettre à jour la progression
     async function updateProgress(id, current, value, type, newProgress) {
         if (!session) return;
         if (type === true) {
@@ -134,6 +137,35 @@ export default function Home() {
         }
     }
 
+    // Mettre à jour la progression d'un simulcast (ajoute 1 et décale la date de 7 jours)
+    async function updateProgressSimulcast(id, progress, date) {
+        try {
+            progress = progress + 1;
+            let nextDate = date ? new Date(date) : null;
+            if (nextDate && !isNaN(nextDate.getTime())) {
+                nextDate.setDate(nextDate.getDate() + 7); // Ajoute 7 jours à la date
+                date = nextDate.toISOString().slice(0, 10); // format YYYY-MM-DD
+            } else {
+                date = date; // fallback si la date est invalide
+            }
+            console.log("Mise à jour simulcast", progress, date);
+            const res = await fetch(`/api/collection/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ progress: progress, dateSimulcast: date }), // Ajoute 7 jours (en ms) pour le prochain simulcast
+            });
+            if (!res.ok) throw new Error("Erreur mise à jour simulcast");
+            const updated = await res.json();
+            setItems((prev) =>
+                prev.map((it) => (it.id === editingId ? updated : it))
+            );
+            setEditingId(null);
+            setEditingTitle("");
+        } catch (err) {
+            setErrorMsg(err.message);
+        }
+    }
+
     async function removeItem(id) {
         if (!session) return;
         if (!confirm("Supprimer cet élément ?")) return;
@@ -149,6 +181,7 @@ export default function Home() {
         }
     }
 
+    // Filtrer, trier, rechercher
     function getDisplayedItems() {
         let list = [...items];
         if (query.trim()) {
@@ -169,6 +202,7 @@ export default function Home() {
 
     async function saveEdit() {
         if (!editingTitle.trim() || !session) return;
+        console.log("Sauvegarde", editingId, editingTitle, type);
         try {
             const res = await fetch(`/api/collection/${editingId}`, {
                 method: "PUT",
@@ -187,12 +221,17 @@ export default function Home() {
         }
     }
 
+    // Mettre à jour le type (anime, manga, simulcast, film, one-shot, tv, autre)
     async function updateType(id, newType) {
         console.log("Changement type", id, newType);
+        setType(newType);
         try {
             const res = await fetch(`/api/collection/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session.access_token}`,
+                },
                 body: JSON.stringify({ type: newType }),
             });
             if (!res.ok) throw new Error("Erreur mise à jour type");
@@ -251,6 +290,11 @@ export default function Home() {
                             >
                                 <option value="anime">Anime</option>
                                 <option value="manga">Manga</option>
+                                <option value="simulcast">Simulcast</option>
+                                <option value="film">Film</option>
+                                <option value="one-shot">One-Shot</option>
+                                <option value="tv">Série TV</option>
+                                <option value="autre">Autre</option>
                             </select>
                             <button
                                 onClick={addItem}
@@ -302,6 +346,10 @@ export default function Home() {
                             <option value="anime">Anime</option>
                             <option value="manga">Manga</option>
                             <option value="simulcast">Simulcast</option>
+                            <option value="film">Film</option>
+                            <option value="one-shot">One-Shot</option>
+                            <option value="tv">Série TV</option>
+                            <option value="autre">Autre</option>
                         </select>
                     </div>
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
