@@ -62,6 +62,9 @@ export default function Home() {
     // Ajouter un élément
     async function addItem() {
         if (!title.trim() || !session) return;
+        let dateSimulcast = new Date().toISOString().slice(0, 10);
+        let typeDefaut = type;
+        if (type === "") {typeDefaut = "anime"; }
         try {
             const res = await fetch("/api/collection", {
                 method: "POST",
@@ -69,7 +72,7 @@ export default function Home() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${session.access_token}`,
                 },
-                body: JSON.stringify({ title: title.trim(), type, progress: 0 }),
+                body: JSON.stringify({ title: title.trim(), type: typeDefaut, progress: 0, dateSimulcast: dateSimulcast }),
             });
             if (!res.ok) throw new Error("Erreur ajout");
             const newItem = await res.json();
@@ -166,6 +169,7 @@ export default function Home() {
         }
     }
 
+    // Supprimer un élément
     async function removeItem(id) {
         if (!session) return;
         if (!confirm("Supprimer cet élément ?")) return;
@@ -195,11 +199,13 @@ export default function Home() {
         return list;
     }
 
+    // Annuler l'édition
     function cancelEdit() {
         setEditingId(null);
         setEditingTitle("");
     }
 
+    // Sauvegarder l'édition
     async function saveEdit() {
         if (!editingTitle.trim() || !session) return;
         console.log("Sauvegarde", editingId, editingTitle, type);
@@ -241,11 +247,44 @@ export default function Home() {
             setItems((prev) =>
                 prev.map((it) => (it.id === id ? updated : it))
             );
+            saveEdit();
         } catch (err) {
             setErrorMsg(err.message);
         }
     }
 
+    function buttonClass(type, item) {
+        if (type === "simulcast") {
+            if (item.dateSimulcast > new Date().toISOString()) {
+                return (
+                    <div className="text-sm text-gray-500">
+                        <span className="font-medium">Prochain épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
+                        <button onClick={() => setEditingId(item)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
+                        <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Suppr</button>
+                    </div>
+                )
+            } else {
+                return (
+                    <div className="text-sm text-gray-500">
+                        <span className="font-medium">Dernier épisode :</span> {item.dateSimulcast ? new Date(item.dateSimulcast).toLocaleDateString() : "N/A"}
+                        <button onClick={() => updateProgressSimulcast(item.id, item.progress, item.dateSimulcast)} className="bg-green-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Vu</button>
+                        <button onClick={() => setEditingId(item)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
+                        <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Suppr</button>
+                    </div>
+                )
+            }
+        } else {
+            return (
+                <div className="flex flex-wrap gap-2">
+                    <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)} className="bg-red-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto">-1</button>
+                    <button onClick={() => updateProgress(item.id, item.progress ?? 0, 1, false)} className="bg-green-500 text-white px-3 py-1 rounded-lg w-full sm:w-auto">+1</button>
+                    <button onClick={() => updateProgress(item.id, 0)} className="bg-blue-400 text-white px-3 py-1 rounded">Reset</button>
+                    <button onClick={() => setEditingId(item)} className="bg-yellow-400 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Edit</button>
+                    <button onClick={() => removeItem(item.id)} className="bg-red-600 text-white px-3 py-1 rounded-lg w-full sm:w-auto">Suppr</button>
+                </div>
+            )
+        }
+    }
 
     if (!session) return <div className="flex items-center justify-center h-screen text-lg">Chargement...</div>;
 
@@ -424,7 +463,8 @@ export default function Home() {
                                 </div>
 
                                 {/* boutons actions */}
-                                {editingId !== item.id && (
+                                {buttonClass(item.type, item)}
+                                {/* {editingId !== item.id && (
                                     <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto">
                                         <button
                                             onClick={() => updateProgress(item.id, item.progress ?? 0, 1, true)}
@@ -450,13 +490,11 @@ export default function Home() {
                                         >
                                             Suppr
                                         </button>
-                                    </div>
-                                )}
+                                    </div> */}
+                                {/* )} */}
                             </li>
                         ))}
                     </ul>
-
-
                     {getDisplayedItems().length === 0 && !loading && (
                         <div className="text-center text-sm text-gray-500 mt-6">
                             Aucun élément à afficher.
